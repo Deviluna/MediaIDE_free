@@ -15,39 +15,138 @@
 #include <QTime>
 #include <createprojectdialog.h>
 #include <QFileDialog>
+#include <QStandardItemModel>
+#include <QMenu>
+#include <QAction>
+#include <QDebug>
+#include <adddirdialog.h>
+#include <QFontDialog>
+#include <QColorDialog>
+#include <QImage>
+#include <testwidget.h>
+#include <closedialog.h>
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    timer=new QTimer(this);
 
-    rootPath="C:\\Users\\wuyuehua\\htmls";
     connect(ui->actionS,SIGNAL(triggered()),this,SLOT(close()));
     connect(ui->actionAbout,SIGNAL(triggered()),this,SLOT(about()));
     connect(ui->actionCreate,SIGNAL(triggered()),this,SLOT(CreateProject()));
     connect(ui->actionOpen,SIGNAL(triggered()),this,SLOT(openProject()));
+    // 得到当前程序路径
+
+    //setMenuAction();
     loadProject(rootPath);
-
+    setTreeview();
+    //重构时候把以上修改一下
+    initTabWidget();
 }
-
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+void MainWindow::initProgramme(){
+
+    prootPath=QCoreApplication::applicationDirPath();
+
+    ui->label_2->setText(prootPath);
+
+    QFile file(prootPath+"\\"+"userinfo.ini");
+    if(file.exists()){
+
+
+    }
+    else {
+        firstUse();
+    }
+
+}
+
+void MainWindow::closeAllTab(){
+    for(int i=0;i<ui->tabWidget->count();i++){
+ui->tabWidget->removeTab(0);
+
+    }
+
+
+}
+
+void MainWindow::initTabWidget(){
+    //等下分开独立成舒适化函数
+    for(int i=0;i<=ui->tabWidget->count();i++){
+        ui->tabWidget->removeTab(i);
+    }
+    connect(ui->tabWidget,SIGNAL(tabCloseRequested(int)),this,SLOT(closeTab(int)));
+    closeAllTab();
+
+}
+
+
+
+void MainWindow::closeTab(int a){
+    //TestWidget *nowWidget=(TestWidget)ui->tabWidget->(a);
+
+    if(false){
+        //这一段希望是添加改动以后的提醒保存按钮，但是有两处技术问题，不知道怎么交互
+
+        CloseDialog *closeDialog=new CloseDialog(this);
+        closeDialog->setWindowTitle(tr("提示窗口"));
+        if(closeDialog->exec()){
+
+        }
+
+
+
+
+    }
+    else
+        ui->tabWidget->removeTab(a);
+}
 
 void MainWindow::openProject(){
-//close();
+    //close();
     QFileDialog* fileDialog = new QFileDialog(this);
     fileDialog->setWindowTitle(tr("打开项目"));
     fileDialog->setFileMode(QFileDialog::Directory);
     if(fileDialog->exec() == QDialog::Accepted) {
-                   QString path = fileDialog->selectedFiles()[0];
-                   path=path.replace("/","\\",Qt::CaseInsensitive);
-                   ui->label_2->setText(path);
-                   loadProject(path);
+        QString path = fileDialog->selectedFiles()[0];
+        path=path.replace("/","\\",Qt::CaseInsensitive);
+        ui->label_2->setText(path);
+        loadProject(path);
+    }
+
+}
+
+void MainWindow::firstUse(){
+    CreateProjectDialog *createDialog=new CreateProjectDialog(this);
+    createDialog->firstUse();
+    if(createDialog->exec()){
+        QString projectPath=createDialog->getProjectPath();
+        QString projectName=createDialog->getProjectName();
+
+        projectPath=projectPath.replace("/","\\",Qt::CaseInsensitive);
+
+        QDir *project=new QDir;
+        bool exist = project->exists(projectPath+"\\"+projectName);
+        if(exist)
+            QMessageBox::warning(this,tr("创建项目"),tr("文件夹已经存在！"));
+        else
+        {
+            bool ok = project->mkdir(projectPath+"\\"+projectName);
+            if( ok ){
+                ui->label_2->setText(projectName);
+                loadProject(projectPath+"\\"+projectName);
+                QMessageBox::warning(this,tr("创建项目"),tr("项目创建成功！"));
+
             }
+        }
+
+
+    }
 
 }
 
@@ -71,8 +170,8 @@ void MainWindow::CreateProject(){
                 loadProject(projectPath+"\\"+projectName);
                 QMessageBox::warning(this,tr("创建项目"),tr("项目创建成功！"));
 
-                    }
             }
+        }
 
 
     }
@@ -80,22 +179,39 @@ void MainWindow::CreateProject(){
 
 void MainWindow::loadProject(QString path){
     rootPath=path;
-    setTreeview();
-   // ui->textEdit->setEnabled(false);
+    nowPath=path;
+refreshTree();
+closeAllTab();
+    // ui->textEdit->setEnabled(false);
 
 }
 
 void MainWindow::update(){
-    setTreeview();
+refreshTree();
 
 }
+
+void MainWindow::refreshTree(){
+    model= new QFileSystemModel;
+    model->setRootPath(rootPath);
+    ui->treeView->setModel(model);
+    ui->treeView->setColumnHidden(1,true);
+    ui->treeView->setColumnHidden(2,true);
+    ui->treeView->setColumnHidden(3,true);
+    ui->treeView->setRootIndex(model->index(rootPath));
+
+
+}
+
+
 void MainWindow::setTreeview(){
 
     model= new QFileSystemModel;
     model->setRootPath(rootPath);
-   // model->
     ui->treeView->setModel(model);
-
+    ui->treeView->setColumnHidden(1,true);
+    ui->treeView->setColumnHidden(2,true);
+    ui->treeView->setColumnHidden(3,true);
     ui->treeView->setRootIndex(model->index(rootPath));
     connect(ui->treeView,SIGNAL(doubleClicked(QModelIndex)),this,SLOT(selectFile(const QModelIndex)));
 }
@@ -103,96 +219,37 @@ void MainWindow::setTreeview(){
 void MainWindow::selectFile(const QModelIndex &index){
     //model->mkdir(index,"hahaha");
     //QModelIndex indexA = model->index(0, 0, QModelIndex());
-  QString file= index.sibling(index.row(),0).data(0).toString();
-    //QString file=index.data(0).toString();
-    nowFile=rootPath+"\\"+file;
-    loadFile(nowFile);
-}
 
-void MainWindow::on_pushButton_4_clicked()
-{
-    setAlign(Qt::AlignCenter);
-
-}
-void MainWindow::loadFile(QString path){\
-    ui->textEdit->setEnabled(true);
-    ui->label->setText(nowFile);
-    ui->textEdit->setText("");
-
-    QFile file(path);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return;
-    QString allStr="";
-    QTextStream in(&file);
-    QString line = in.readLine();
-    while (!line.isNull()) {
-        line = in.readLine();
-        allStr+=line;
+    if(!model->isDir(index)){
+        QString file= index.sibling(index.row(),0).data(0).toString();
+        //QString file=index.data(0).toString();
+        nowFile=rootPath+"\\"+file;
+        loadFile(nowFile);
     }
-    ui->textEdit->setText(allStr);
-
+    else{
+        nowPath=model->filePath(index);
+        //ui->label->setText(nowPath);
+        // cleanText();
+    }
 }
 
 
-
-void MainWindow::setAlign(Qt::Alignment align){
-
-    QTextCursor cursor = ui->textEdit->textCursor();
-    ui->textEdit->setTextCursor( cursor );
-    QTextBlockFormat tbFmt=cursor.blockFormat();
-    tbFmt.setAlignment(Qt::AlignCenter);
-    tbFmt.setAlignment(align);
-    cursor.setBlockFormat(tbFmt);
-
-    ui->textEdit->setTextCursor( cursor ); // added
-    //    ui->view1->setCurrentCharFormat( defcharfmt );
-    ui->textEdit->setFocus();
-
-}
-void MainWindow::on_commitButton_clicked()
-{
-    outputFile(nowFile);
-}
-
-void MainWindow::getNowtext(){
-    nowText=ui->textEdit->toHtml();
-
-}
-void MainWindow::setColor(const QColor &c){
-    QTextCursor cursor = ui->textEdit->textCursor();
-
-    ui->textEdit->setTextColor(c);
-    // ui->textEdit->setTextColor();
-   // cursor.movePosition( QTextCursor::PreviousCharacter );//加上这句是为了去除光标selected
-    ui->textEdit->setTextCursor( cursor ); // added
-    //    ui->view1->setCurrentCharFormat( defcharfmt );
-    ui->textEdit->setFocus();
-}
 void MainWindow::about(){
     QMessageBox::about(this,tr("About Media IDE"),tr("<h2>Media IDE v0.05</h2><p>only for evaluating</P><P>Copyright &copy; 2017 Deviluna Inc.</p>"));
 }
 
-void MainWindow::setUnderline(){
+void MainWindow::loadFile(QString path){
 
-    QTextCursor cursor = ui->textEdit->textCursor();
-
-    ui->textEdit->setTextCursor( cursor );  // added
-
-    QTextCharFormat newFormat=ui->textEdit->currentCharFormat();
-    newFormat.setUnderlineStyle( QTextCharFormat::SingleUnderline );
-    newFormat.setFontUnderline( true );
-    //  newFormat.AlignMiddle=true;
-    ui->textEdit->setCurrentCharFormat(newFormat);
-
-
-   // cursor.movePosition( QTextCursor::PreviousCharacter );//加上这句是为了去除光标selected
-    ui->textEdit->setTextCursor( cursor ); // added
-    //    ui->view1->setCurrentCharFormat( defcharfmt );
-    ui->textEdit->setFocus();
-
-
+    QFileInfo fi=QFileInfo(path);
+    TestWidget *page=new TestWidget;
+    page->loadFile(path);
+    ui->tabWidget->insertTab(ui->tabWidget->count()+1,page,fi.baseName());
+    ui->tabWidget->setCurrentIndex(ui->tabWidget->count()-1);
 
 }
+
+
+
 
 void MainWindow::addFile(QString fileName){
 
@@ -201,84 +258,133 @@ void MainWindow::addFile(QString fileName){
 
 }
 
-void MainWindow::setFont(){
-    QFont serifFont("Times", 10, QFont::Bold);
-    QTextCursor cursor = ui->textEdit->textCursor();
-    ui->textEdit->setTextCursor( cursor );
-    QTextCharFormat newFormat=ui->textEdit->currentCharFormat();
-    newFormat.setUnderlineStyle( QTextCharFormat::SingleUnderline );
-    newFormat.setFontUnderline( true );
-    ui->textEdit->setCurrentCharFormat(newFormat);
-    cursor.movePosition( QTextCursor::PreviousCharacter );
-    ui->textEdit->setTextCursor( cursor );
-    ui->textEdit->setFocus();
 
-}
-
-void MainWindow::outputFile(QString path){
-    getNowtext();
-    QFile file(path);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QMessageBox::information(NULL, tr("提示信息："), tr("文件打开失败！"));
-        return;
-    }
-    QTextStream out(&file);
-    out<<nowText;
-    file.close();
-    setTreeview();
-}
 
 
 
 
 void MainWindow::previewHtml(QString path){
     QProcess* process = new QProcess();
-   QString notepadPath = "explorer "+path;
+    QString notepadPath = "explorer "+path;
     process->start(notepadPath);
 }
 
 void MainWindow::on_pushButton_clicked()
 {
-    //red
-    setColor(Qt::red);
-}
-
-void MainWindow::on_pushButton_2_clicked()
-{
-    //black
-    setFont();
+    //测试用按钮，以下是测试使用的代码
 
 }
 
-void MainWindow::on_pushButton_3_clicked()
-{
-    setColor(Qt::black);
-
-}
-
-void MainWindow::on_pushButton_5_clicked()
-{
-    setAlign(Qt::AlignLeft);
-
-}
-
-void MainWindow::on_pushButton_6_clicked()
-{
-    outputFile(nowFile);
-    ui->label_2->setText(nowFile);
-    previewHtml(nowFile);
-}
 
 void MainWindow::on_pushButton_7_clicked()
 {
     AddFileDialog *addDialog=new AddFileDialog(this);
-    //addDialog->show();
     if(addDialog->exec()){
         nowFile=rootPath+"\\"+addDialog->getinput()+".html";
+
         loadFile(nowFile);
-        outputFile(nowFile);
-        setTreeview();
-       // QMessageBox::information(NULL, tr("提示信息："), tr("我成功！"));
+
+        //  outputFile(nowFile);
+
+        refreshTree();
 
     }
 }
+
+void MainWindow::setMenuAction(){
+    m_folderMenu=new QMenu(this);
+    m_fileMenu=new QMenu(this);
+    QAction *ac = nullptr;
+    ac = new QAction(QStringLiteral("重命名"),this);
+    m_folderMenu->addAction(ac);
+
+    ac = new QAction(QStringLiteral("删除"),this);
+    m_folderMenu->addAction(ac);
+
+
+    ac = new QAction(QStringLiteral("编辑"),this);
+    m_fileMenu->addAction(ac);
+
+    ac = new QAction(QStringLiteral("重命名"),this);
+    m_fileMenu->addAction(ac);
+
+    //ac = new QAction(QStringLiteral("删除"),this,SLOT(close()));
+
+    m_fileMenu->addAction(ac);
+
+}
+
+
+
+
+void MainWindow::on_treeView_customContextMenuRequested(const QPoint &pos)
+{
+
+
+    QModelIndex index = ui->treeView->indexAt(pos);
+    ui->label_2->setText(model->filePath(index));
+    nowIndex=index;
+
+
+    if(model->isDir(index)){
+        m_folderMenu=new QMenu(this);
+        m_folderMenu->addAction("删除",this,SLOT(deleteDir()));
+        m_folderMenu->exec(QCursor::pos());
+
+
+
+
+    }
+    else{
+
+        m_fileMenu=new QMenu(this);
+        //这里虽然实现，但是有问题，讲道理应该用槽来传递变量，但是直接用全局变量。
+        //不合规范
+
+        m_fileMenu->addAction("删除",this,SLOT(deleteFile()));
+
+        m_fileMenu->exec(QCursor::pos());
+    }
+}
+
+void MainWindow::deleteDir(){
+    model->rmdir(nowIndex);
+    refreshTree();
+}
+
+void MainWindow::deleteFile(){
+    model->remove(nowIndex);
+    refreshTree();
+}
+
+void MainWindow::on_pushButton_8_clicked()
+{
+    //讲道理类名都该大写的
+
+    addDirDialog *addDialog=new addDirDialog(this);
+
+    if(addDialog->exec()){
+        QString dirName=addDialog->getinput();
+        QDir *project=new QDir;
+        bool exist = project->exists(nowPath+"\\"+dirName);
+        if(exist)
+            QMessageBox::warning(this,tr("创建文件夹"),tr("文件夹已经存在！"));
+        else
+        {
+            bool ok = project->mkdir(nowPath+"\\"+dirName);
+            if( ok ){
+                //ui->label_2->setText(projectName);
+                //loadProject(projectPath+"\\"+projectName);
+                //QMessageBox::warning(this,tr("创建项目"),tr("项目创建成功！"));
+
+            }
+            else{
+                QMessageBox::warning(this,tr("创建文件夹"),tr("失败！"));
+            }
+
+        }
+        refreshTree();
+
+    }
+}
+

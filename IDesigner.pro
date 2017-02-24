@@ -26,15 +26,24 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp\
         mainwindow.cpp \
     addfiledialog.cpp \
-    createprojectdialog.cpp
+    createprojectdialog.cpp \
+    adddirdialog.cpp \
+    testwidget.cpp \
+    closedialog.cpp
 
 HEADERS  += mainwindow.h \
     addfiledialog.h \
-    createprojectdialog.h
+    createprojectdialog.h \
+    adddirdialog.h \
+    testwidget.h \
+    closedialog.h
 
 FORMS    += mainwindow.ui \
     addfiledialog.ui \
-    createprojectdialog.ui
+    createprojectdialog.ui \
+    adddirdialog.ui \
+    testwidget.ui \
+    closedialog.ui
 
 RESOURCES += \
     designer.qrc

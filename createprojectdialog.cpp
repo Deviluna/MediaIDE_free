@@ -8,6 +8,7 @@ CreateProjectDialog::CreateProjectDialog(QWidget *parent) :
     ui(new Ui::CreateProjectDialog)
 {
     ui->setupUi(this);
+
 }
 
 CreateProjectDialog::~CreateProjectDialog()
@@ -19,6 +20,10 @@ QString CreateProjectDialog::getProjectName(){
 }
 QString CreateProjectDialog::getProjectPath(){
     return ui->lineEdit_2->text();
+}
+
+void CreateProjectDialog::firstUse(){
+    setWindowTitle("初次使用：新建项目");
 }
 
 void CreateProjectDialog::on_pushButton_clicked()

@@ -16,6 +16,7 @@ public:
     ~CreateProjectDialog();
     QString getProjectName();
     QString getProjectPath();
+    void firstUse();
 
 
 private slots:
