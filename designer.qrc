@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/new/prefix1">
         <file>Images/log.png</file>
+        <file>Images/favicon.ico</file>
+        <file>Images/tb.ico</file>
     </qresource>
 </RCC>

@@ -46,7 +46,7 @@
      <item>
       <widget class="QPushButton" name="pushButton_2">
        <property name="text">
-        <string>退出</string>
+        <string>不保存</string>
        </property>
       </widget>
      </item>

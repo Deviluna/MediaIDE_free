@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>430</width>
-    <height>318</height>
+    <width>828</width>
+    <height>489</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -32,7 +32,7 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
          <widget class="QLabel" name="label_2">
@@ -121,6 +121,17 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+         <weight>75</weight>
+         <italic>false</italic>
+         <bold>true</bold>
+         <underline>false</underline>
+         <strikeout>false</strikeout>
+         <kerning>true</kerning>
+        </font>
+       </property>
        <property name="currentIndex">
         <number>1</number>
        </property>
@@ -134,7 +145,7 @@
        </widget>
        <widget class="QWidget" name="tab_2">
         <attribute name="title">
-         <string>Tab 2</string>
+         <string/>
         </attribute>
        </widget>
       </widget>
@@ -147,8 +158,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>430</width>
-     <height>23</height>
+     <width>828</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">

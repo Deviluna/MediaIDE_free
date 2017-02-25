@@ -29,21 +29,26 @@ SOURCES += main.cpp\
     createprojectdialog.cpp \
     adddirdialog.cpp \
     testwidget.cpp \
-    closedialog.cpp
+    closedialog.cpp \
+    welcomedialog.cpp
 
 HEADERS  += mainwindow.h \
     addfiledialog.h \
     createprojectdialog.h \
     adddirdialog.h \
     testwidget.h \
-    closedialog.h
+    closedialog.h \
+    welcomedialog.h
 
 FORMS    += mainwindow.ui \
     addfiledialog.ui \
     createprojectdialog.ui \
     adddirdialog.ui \
     testwidget.ui \
-    closedialog.ui
+    closedialog.ui \
+    welcomedialog.ui
 
 RESOURCES += \
     designer.qrc
+
+RC_FILE =qtdemo.rc

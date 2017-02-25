@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     MainWindow w;
 
 
-
+    //setWindowState(Qt::WindowMaximized);
     splash->setPixmap(QPixmap(":/new/prefix1/Images/log.png"));
       splash->show();
       QElapsedTimer t;
@@ -26,10 +26,10 @@ int main(int argc, char *argv[])
         }
         w.setWindowTitle("Media IDE Beta");
         w.show();
+
         splash->finish(&w);
         w.initProgramme();
-
-    return a.exec();
+        return a.exec();
 }
 
 

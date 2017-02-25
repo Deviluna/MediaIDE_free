@@ -25,9 +25,14 @@ TestWidget::~TestWidget()
 
 void TestWidget::on_pushButton_clicked()
 {
+    save();
+}
+
+void TestWidget::save(){
     outputFile(nowFile);
 
 }
+
 
 
 void TestWidget::outputFile(QString path){
@@ -42,7 +47,7 @@ void TestWidget::outputFile(QString path){
     QTextStream out(&file);
     out<<nowText;
     file.close();
-//目前保存功能移植完毕，但是由于treeview在主界面 所以没有刷新。
+    //目前保存功能移植完毕，但是由于treeview在主界面 所以没有刷新。
     if(fi.baseName()!=ui->lineEdit->text()){
         file.rename(fi.absolutePath()+"\\"+ui->lineEdit->text()+".html");
         loadFile(fi.absolutePath()+"\\"+ui->lineEdit->text()+".html");
@@ -54,7 +59,7 @@ void TestWidget::getNowtext(){
     nowText=ui->textEdit->toHtml();
 }
 
- void TestWidget::loadFile(QString path){
+void TestWidget::loadFile(QString path){
     change=false;
     QFileInfo fi=QFileInfo(path);
     nowFile=path;
@@ -75,19 +80,19 @@ void TestWidget::getNowtext(){
     }
     ui->textEdit->setText(allStr);
 
-
+    change=false;
 }
- void TestWidget::previewHtml(QString path){
-     QProcess* process = new QProcess();
-     QString notepadPath = "explorer "+path;
-     process->start(notepadPath);
- }
+void TestWidget::previewHtml(QString path){
+    QProcess* process = new QProcess();
+    QString notepadPath = "explorer "+path;
+    process->start(notepadPath);
+}
 
 
 void TestWidget::on_pushButton_4_clicked()
 {
     outputFile(nowFile);
-   // ui->label->setText(nowFile);
+    // ui->label->setText(nowFile);
     previewHtml(nowFile);
 }
 
@@ -145,7 +150,7 @@ void TestWidget::on_toolButton_2_clicked()
 
 void TestWidget::on_toolButton_5_clicked()
 {
-setUnderline();
+    setUnderline();
 }
 
 void TestWidget::setUnderline(){
@@ -274,7 +279,7 @@ void TestWidget::insertImage(){
     ui->textEdit->setTextCursor( cursor );  // added
     QImage image;
     image.load(path);
-   // image=image.scaled(100,100,Qt::IgnoreAspectRatio,Qt::FastTransformation);
+    // image=image.scaled(100,100,Qt::IgnoreAspectRatio,Qt::FastTransformation);
     cursor.insertImage(image,"name");
     ui->textEdit->setTextCursor( cursor );
     ui->textEdit->setFocus();

@@ -9,7 +9,6 @@ addDirDialog::addDirDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(ui->lineEdit->text().length()>0);
-
 }
 
 addDirDialog::~addDirDialog()

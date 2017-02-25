@@ -22,6 +22,8 @@ public:
 
     QString getTitle();
 
+    void save();
+
     ~TestWidget();
 
 private slots:

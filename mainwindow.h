@@ -6,6 +6,8 @@
 #include <QTimer>
 #include <QFileSystemModel>
 #include <QMenu>
+#include <QWidget>
+
 
 namespace Ui {
 class MainWindow;
@@ -19,18 +21,18 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void initProgramme();
-
+    void CreateProject();
+    void OpenProject();
+    void CloseNowTab();
+    QWidget* Page();
 private slots:
+
+    void createProject();
 
 
     void closeTab(int a);
 
-    void CreateProject();
-
-
-
     void on_pushButton_clicked();
-
 
     void about();
 
@@ -90,7 +92,6 @@ private slots:
     QColor quickColor;
     QModelIndex nowIndex;
     QString prootPath;
-
 
 };
 

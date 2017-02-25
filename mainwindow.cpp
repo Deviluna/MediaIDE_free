@@ -25,24 +25,22 @@
 #include <QImage>
 #include <testwidget.h>
 #include <closedialog.h>
+#include <QIcon>
+#include <welcomedialog.h>
 
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    this->setWindowState(Qt::WindowMaximized);
     ui->setupUi(this);
-
     connect(ui->actionS,SIGNAL(triggered()),this,SLOT(close()));
     connect(ui->actionAbout,SIGNAL(triggered()),this,SLOT(about()));
-    connect(ui->actionCreate,SIGNAL(triggered()),this,SLOT(CreateProject()));
+    connect(ui->actionCreate,SIGNAL(triggered()),this,SLOT(createProject()));
     connect(ui->actionOpen,SIGNAL(triggered()),this,SLOT(openProject()));
-    // 得到当前程序路径
-
-    //setMenuAction();
     loadProject(rootPath);
     setTreeview();
-    //重构时候把以上修改一下
     initTabWidget();
 }
 MainWindow::~MainWindow()
@@ -68,10 +66,15 @@ void MainWindow::initProgramme(){
 
 void MainWindow::closeAllTab(){
     for(int i=0;i<ui->tabWidget->count();i++){
-ui->tabWidget->removeTab(0);
+        ui->tabWidget->removeTab(0);
 
     }
 
+
+}
+
+void MainWindow::CloseNowTab(){
+    ui->tabWidget->removeTab(ui->tabWidget->currentIndex());
 
 }
 
@@ -89,13 +92,16 @@ void MainWindow::initTabWidget(){
 
 void MainWindow::closeTab(int a){
     //TestWidget *nowWidget=(TestWidget)ui->tabWidget->(a);
+    TestWidget *nowWidget=(TestWidget*)ui->tabWidget->widget(a);
 
-    if(false){
+    if(nowWidget->changed()){
         //这一段希望是添加改动以后的提醒保存按钮，但是有两处技术问题，不知道怎么交互
 
         CloseDialog *closeDialog=new CloseDialog(this);
         closeDialog->setWindowTitle(tr("提示窗口"));
         if(closeDialog->exec()){
+
+
 
         }
 
@@ -106,6 +112,12 @@ void MainWindow::closeTab(int a){
     else
         ui->tabWidget->removeTab(a);
 }
+
+QWidget* MainWindow::Page(){
+
+    return ui->tabWidget->currentWidget();
+}
+
 
 void MainWindow::openProject(){
     //close();
@@ -121,8 +133,30 @@ void MainWindow::openProject(){
 
 }
 
+void MainWindow::OpenProject(){
+    //close();
+    QFileDialog* fileDialog = new QFileDialog(this);
+    fileDialog->setWindowTitle(tr("打开项目"));
+    fileDialog->setFileMode(QFileDialog::Directory);
+    if(fileDialog->exec() == QDialog::Accepted) {
+        QString path = fileDialog->selectedFiles()[0];
+        path=path.replace("/","\\",Qt::CaseInsensitive);
+        ui->label_2->setText(path);
+        loadProject(path);
+    }
+
+}
+
 void MainWindow::firstUse(){
-    CreateProjectDialog *createDialog=new CreateProjectDialog(this);
+
+
+    WelcomeDialog *wDialog=new WelcomeDialog(this);
+    wDialog->show();
+    //connect(wDialog->ui->push,)
+
+
+    /*
+     * CreateProjectDialog *createDialog=new CreateProjectDialog(this);
     createDialog->firstUse();
     if(createDialog->exec()){
         QString projectPath=createDialog->getProjectPath();
@@ -140,14 +174,18 @@ void MainWindow::firstUse(){
             if( ok ){
                 ui->label_2->setText(projectName);
                 loadProject(projectPath+"\\"+projectName);
-                QMessageBox::warning(this,tr("创建项目"),tr("项目创建成功！"));
+                // QMessageBox::warning(this,tr("创建项目"),tr("项目创建成功！"));
 
             }
         }
 
 
     }
+*/
+}
 
+void MainWindow::createProject(){
+   CreateProject();
 }
 
 void MainWindow::CreateProject(){
@@ -168,7 +206,24 @@ void MainWindow::CreateProject(){
             if( ok ){
                 ui->label_2->setText(projectName);
                 loadProject(projectPath+"\\"+projectName);
-                QMessageBox::warning(this,tr("创建项目"),tr("项目创建成功！"));
+              //  QMessageBox::warning(this,tr("创建项目"),tr("项目创建成功！"));
+
+                QString path=rootPath+"\\"+"第一篇文.html";
+                //初始化文件
+                QFile file(path);
+                QFileInfo fi=QFileInfo(path);
+                if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+                    QMessageBox::information(NULL, tr("提示信息："), tr("文件打开失败！"));
+                    return;
+                }
+                QTextStream out(&file);
+                QString fir="下一个要解决的问题，重复的page（应该easy的，顶多遍历），接着还要解决存储问题";
+                out<<fir;
+                //out<<"下一个要解决的问题，重复的page（应该easy的，顶多遍历），接着还要解决存储问题";
+                file.close();
+                refreshTree();
+                loadFile(path);
+
 
             }
         }
@@ -180,14 +235,17 @@ void MainWindow::CreateProject(){
 void MainWindow::loadProject(QString path){
     rootPath=path;
     nowPath=path;
-refreshTree();
-closeAllTab();
+    refreshTree();
+    closeAllTab();
     // ui->textEdit->setEnabled(false);
 
 }
 
+
+
+
 void MainWindow::update(){
-refreshTree();
+    refreshTree();
 
 }
 
@@ -247,6 +305,8 @@ void MainWindow::loadFile(QString path){
     ui->tabWidget->setCurrentIndex(ui->tabWidget->count()-1);
 
 }
+
+
 
 
 

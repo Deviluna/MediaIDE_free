@@ -2,13 +2,13 @@
 #include "ui_createprojectdialog.h"
 #include <QFileDialog>
 #include <QMessageBox>
-
+#include <QDesktopServices>
 CreateProjectDialog::CreateProjectDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::CreateProjectDialog)
 {
     ui->setupUi(this);
-
+   ui->lineEdit_2->setText(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
 }
 
 CreateProjectDialog::~CreateProjectDialog()
