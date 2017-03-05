@@ -26,4 +26,4 @@ private:
     Ui::CreateProjectDialog *ui;
 };
 
-#endif // CREATEPROJECTDIALOG_H
+#endif

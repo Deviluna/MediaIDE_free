@@ -24,6 +24,10 @@ public:
 
     void save();
 
+    QString getPath();
+
+    void findWord(QString word);
+
     ~TestWidget();
 
 private slots:
@@ -64,6 +68,10 @@ private slots:
     void on_textEdit_textChanged();
 
 
+    void on_toolButton_14_clicked();
+
+    void on_lineEdit_2_textChanged(const QString &arg1);
+
 private:
     Ui::TestWidget *ui;
     void outputFile();
@@ -95,6 +103,7 @@ private:
     QFont quickFont;
     QColor quickColor;
     bool change;
+    QString preText;
 };
 
 #endif // TESTWIDGET_H

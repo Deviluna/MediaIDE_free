@@ -38,6 +38,9 @@ private slots:
 
     void selectFile(const QModelIndex &index);
 
+    void addArticle();
+
+    void addDir();
 
     void on_pushButton_7_clicked();
 
@@ -55,6 +58,7 @@ private slots:
 
 
  private:
+    void setupMenu();
     void closeAllTab();
     void firstUse();
     void initTabWidget();

@@ -10,6 +10,8 @@
 #include <QColorDialog>
 #include <QFontDialog>
 #include <QFileDialog>
+#include <QTextCursor>
+
 
 TestWidget::TestWidget(QWidget *parent) :
     QWidget(parent),
@@ -33,6 +35,36 @@ void TestWidget::save(){
 
 }
 
+void TestWidget::findWord(QString word){
+
+
+
+    if(ui->textEdit->find(word,QTextDocument::FindCaseSensitively))
+    {
+        QPalette palette = ui->textEdit->palette();
+        palette.setColor(QPalette::Highlight,palette.color(QPalette::Active,QPalette::Highlight));
+        ui->textEdit->setPalette(palette);
+        //ui->textEdit->setCursor();
+    }
+
+    else
+    {
+        QTextCursor cur=ui->textEdit->textCursor();
+        cur.setPosition(2,QTextCursor::MoveAnchor);
+        ui->textEdit->setTextCursor(cur);
+        if(ui->textEdit->find(word,QTextDocument::FindCaseSensitively))
+        {
+            QPalette palette = ui->textEdit->palette();
+            palette.setColor(QPalette::Highlight,palette.color(QPalette::Active,QPalette::Highlight));
+            ui->textEdit->setPalette(palette);
+            //ui->textEdit->setCursor();
+        }
+
+
+        else       QMessageBox::information(this,tr("注意"),tr("没有找到内容：")+word,QMessageBox::Ok);
+    }
+
+}
 
 
 void TestWidget::outputFile(QString path){
@@ -59,8 +91,11 @@ void TestWidget::getNowtext(){
     nowText=ui->textEdit->toHtml();
 }
 
+QString TestWidget::getPath(){
+    return nowFile;
+}
+
 void TestWidget::loadFile(QString path){
-    change=false;
     QFileInfo fi=QFileInfo(path);
     nowFile=path;
     ui->lineEdit->setText(fi.baseName());
@@ -79,8 +114,10 @@ void TestWidget::loadFile(QString path){
         allStr+=line;
     }
     ui->textEdit->setText(allStr);
-
+    preText=allStr;
+    //change=false;
     change=false;
+
 }
 void TestWidget::previewHtml(QString path){
     QProcess* process = new QProcess();
@@ -298,5 +335,18 @@ bool TestWidget::changed(){
 void TestWidget::on_textEdit_textChanged()
 {
     //目前只是粗略的判断改动，以后对于是否进行更改的判断要更细致（比较前后两个文件是否相同）
+
     change=true;
+
+}
+
+void TestWidget::on_toolButton_14_clicked()
+{
+    findWord(ui->lineEdit_2->text());
+}
+
+void TestWidget::on_lineEdit_2_textChanged(const QString &arg1)
+{
+    //findWord(arg1);
+
 }
