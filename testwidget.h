@@ -20,6 +20,8 @@ public:
 
     bool changed();
 
+    void setRootpath(QString path);
+
     QString getTitle();
 
     void save();
@@ -72,6 +74,8 @@ private slots:
 
     void on_lineEdit_2_textChanged(const QString &arg1);
 
+    void on_pushButton_5_clicked();
+
 private:
     Ui::TestWidget *ui;
     void outputFile();
@@ -91,6 +95,8 @@ private:
     void getNowtext();
     void outputText();
     void setQuickFont();
+    void outputTemplate(QString html);
+    QString loadTemplate(QString path);
     void setQuickColor();
     void setAlign(Qt::Alignment align);
     void setMenuAction();

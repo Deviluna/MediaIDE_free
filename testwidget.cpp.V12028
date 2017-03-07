@@ -97,7 +97,7 @@ QString TestWidget::getPath(){
 
 QString TestWidget::loadTemplate(QString path){
     QFile file(path);
-    QString allStr="";
+    QString allStr="test load";
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
         QMessageBox::information(this,tr("注意"),tr("糟糕， 模板丢失"),QMessageBox::Ok);
@@ -113,6 +113,7 @@ QString TestWidget::loadTemplate(QString path){
         line = in.readLine();
         allStr+=line;
     }
+    ui->textEdit->setText(allStr);
 
     return allStr;
 }
@@ -384,23 +385,13 @@ void TestWidget::on_pushButton_5_clicked()
 {
     //这里是从模板生成html的测试文件，主要就是把标题，作者等必要标签插入，还有时间采用系统时间这样，文章主要内容从tohtml截取可以用的部分来实现。
     QString title=ui->lineEdit->text();
-    QString author=ui->lineEdit_3->text();
+    QString author=ui->lineEdit_2->text();
     QString content=ui->textEdit->toPlainText();
     QString templateFile=loadTemplate(rootPath+"\\"+"template.html");
     //以上将模板库和必要数据读入
-
-
-    QString tohtml=ui->textEdit->toHtml();
-    QRegExp rx("<body.*>(.*)</body>");
-    rx.indexIn(tohtml);
-    QStringList list=rx.capturedTexts();
-    QString contentHtml=tohtml;
-
-    ui->textEdit->setText(tohtml+"i have do sth");
-
     templateFile.replace("%(title)s",title);
     templateFile.replace("%(author)s",author);
-    templateFile.replace("%(content)s",contentHtml);
+    templateFile.replace("%(content)s",content);
     outputTemplate(templateFile);
 
 }
@@ -408,14 +399,12 @@ void TestWidget::on_pushButton_5_clicked()
 void TestWidget::outputTemplate(QString html){
     QString path=rootPath+"\\"+"templatest.html";
     QFile file(rootPath+"\\"+"templatest.html");
-
     QFileInfo fi=QFileInfo(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QMessageBox::information(NULL, tr("提示信息："), tr("文件打开失败！"));
         return;
     }
     QTextStream out(&file);
-    out.setCodec("UTF-8");
     out<<html;
     file.close();
     //目前保存功能移植完毕，但是由于treeview在主界面 所以没有刷新。

@@ -239,6 +239,7 @@ void MainWindow::loadFile(QString path){
     QFileInfo fi=QFileInfo(path);
     TestWidget *page=new TestWidget;
     page->loadFile(path);
+    page->setRootpath(rootPath);
     ui->tabWidget->insertTab(ui->tabWidget->count()+1,page,fi.baseName());
     ui->tabWidget->setCurrentIndex(ui->tabWidget->count()-1);
 
