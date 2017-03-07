@@ -260,6 +260,9 @@ void MainWindow::on_pushButton_clicked()
 {
     //测试用按钮，以下是测试使用的代码
 
+    QStringList args;
+        args.append("C:/test/test.py");
+        QProcess::execute(QString("Python.exe"), args);
 }
 
 void MainWindow::addArticle(){
