@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     closedialog.cpp \
     welcomedialog.cpp \
     wizard.cpp \
-    rmdirdialog.cpp
+    rmdirdialog.cpp \
+    testpage.cpp
 
 HEADERS  += mainwindow.h \
     addfiledialog.h \
@@ -42,7 +43,8 @@ HEADERS  += mainwindow.h \
     closedialog.h \
     welcomedialog.h \
     wizard.h \
-    rmdirdialog.h
+    rmdirdialog.h \
+    testpage.h
 
 FORMS    += mainwindow.ui \
     addfiledialog.ui \
@@ -52,7 +54,8 @@ FORMS    += mainwindow.ui \
     closedialog.ui \
     welcomedialog.ui \
     wizard.ui \
-    rmdirdialog.ui
+    rmdirdialog.ui \
+    testpage.ui
 
 RESOURCES += \
     designer.qrc

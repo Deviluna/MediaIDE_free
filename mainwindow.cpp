@@ -23,6 +23,8 @@
 #include <QIcon>
 #include <welcomedialog.h>
 #include <rmdirdialog.h>
+#include <testpage.h>
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -79,6 +81,13 @@ void MainWindow::initTabWidget(){
 
     connect(ui->tabWidget,SIGNAL(tabCloseRequested(int)),this,SLOT(closeTab(int)));
     closeAllTab();
+
+
+    //测试段函数
+    TestPage *lsPage=new TestPage;
+    ui->tabWidget->insertTab(ui->tabWidget->count()+1,lsPage,"test page");
+
+
 
 }
 
