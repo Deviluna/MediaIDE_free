@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     welcomedialog.cpp \
     wizard.cpp \
     rmdirdialog.cpp \
-    testpage.cpp
+    testpage.cpp \
+    argall.cpp
 
 HEADERS  += mainwindow.h \
     addfiledialog.h \
@@ -44,7 +45,8 @@ HEADERS  += mainwindow.h \
     welcomedialog.h \
     wizard.h \
     rmdirdialog.h \
-    testpage.h
+    testpage.h \
+    argall.h
 
 FORMS    += mainwindow.ui \
     addfiledialog.ui \

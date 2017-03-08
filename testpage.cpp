@@ -26,58 +26,37 @@ TestPage::~TestPage()
 
 void TestPage::test(){
 
-
-    QJsonObject json;
-    json.insert("name", QString("Qt"));
-    json.insert("version", 5);
-    json.insert("windows", true);
-
-    QJsonDocument document;
-    document.setObject(json);
-    QByteArray byte_array = document.toJson(QJsonDocument::Compact);
-    QString json_str(byte_array);
-
-
-    QString data=loadJson("C:\\test\\testjson.html");
-    QJsonParseError json_error;
-    QJsonDocument parse_doucment = QJsonDocument::fromJson(data.toUtf8(), &json_error);
     QString out="";
-    if(json_error.error == QJsonParseError::NoError)
-    {
-        if(parse_doucment.isObject())
-        {
-            QJsonObject obj = parse_doucment.object();
-            if(obj.contains("name"))
-            {
-                QJsonValue name_value = obj.take("name");
-                if(name_value.isString())
-                {
-                    QString name = name_value.toString();
-                    out+=name;
-                }
-            }
-            if(obj.contains("version"))
-            {
-                QJsonValue version_value = obj.take("version");
-                if(version_value.isDouble())
-                {
-                    int version = version_value.toVariant().toInt();
-                    out+=QString::number(version);
-                }
-            }
-            if(obj.contains("windows"))
-            {
-                QJsonValue version_value = obj.take("windows");
-                if(version_value.isBool())
-                {
-                    bool flag = version_value.toBool();
+    QJsonObject json;
+    json.insert("title", "官方APP上线");
+    json.insert("picurl", "http://deviluna.com/appContent/pics/pic1.jpg");
+    json.insert("url", "http://deviluna.com/articles/article5.html");
+    QJsonObject json2;
+    json2.insert("title", "打飞机");
+    json2.insert("picurl", "http://deviluna.com/appContent/pics/pic2.jpg");
+    json2.insert("url", "http://120.77.248.40/plane/");
+    QJsonObject json3;
+    json3.insert("title", "MediaIDE测试 ");
+    json3.insert("picurl", "http://deviluna.com/appContent/pics/pic3.jpg");
+    json3.insert("url", "http://deviluna.com/articles/article6.html");
+    QJsonArray json_array;
 
-                }
-            }
-        }
+    json_array.insert(0, json);
+    json_array.insert(1, json2);
+    json_array.insert(1, json3);
+
+
+    QByteArray byte_array = QJsonDocument(json_array).toJson();
+    ui->textEdit->setText(QString(byte_array));
+    QJsonArray json_array2 = QJsonDocument::fromJson(byte_array).array();
+    for(int i = 0; i < json_array2.size(); ++i) {
+        QJsonObject json = json_array2.at(i).toObject();
+        out+=json.value("title").toString();
+        out+=json.value("author").toString();
+        out+=json.value("url").toString();
     }
-    else out="error";
-ui->textEdit->setText(out);
+
+    //ui->textEdit->setText(out);
 
 }
 

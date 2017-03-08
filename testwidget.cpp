@@ -12,6 +12,9 @@
 #include <QFileDialog>
 #include <QTextCursor>
 #include <QRegExp>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <argall.h>
 
 TestWidget::TestWidget(QWidget *parent) :
     QWidget(parent),
@@ -69,7 +72,18 @@ void TestWidget::findWord(QString word){
 
 void TestWidget::outputFile(QString path){
 
-    getNowtext();
+    QString content=ui->textEdit->toHtml();
+    QString author=ui->lineEdit_3->text();
+    QString title=ui->lineEdit->text();
+    QString date="日期功能待加入";
+    QJsonObject json;
+    json.insert("title", title);
+    json.insert("author", author);
+    json.insert("date", date);
+    json.insert("content", content);
+    QString nowText=QString(QJsonDocument(json).toJson());
+
+
     QFile file(path);
     QFileInfo fi=QFileInfo(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -77,12 +91,13 @@ void TestWidget::outputFile(QString path){
         return;
     }
     QTextStream out(&file);
+    out.setCodec("UTF-8");
     out<<nowText;
     file.close();
     //目前保存功能移植完毕，但是由于treeview在主界面 所以没有刷新。
     if(fi.baseName()!=ui->lineEdit->text()){
-        file.rename(fi.absolutePath()+"\\"+ui->lineEdit->text()+".html");
-        loadFile(fi.absolutePath()+"\\"+ui->lineEdit->text()+".html");
+        file.rename(fi.absolutePath()+"\\"+ui->lineEdit->text()+".m");
+        loadFile(fi.absolutePath()+"\\"+ui->lineEdit->text()+".m");
     }
 
 }
@@ -106,9 +121,7 @@ QString TestWidget::loadTemplate(QString path){
 
     QTextStream in(&file);
     QString line = in.readLine();
-
-
-
+    allStr+=line;
     while (!line.isNull()) {
         line = in.readLine();
         allStr+=line;
@@ -118,8 +131,29 @@ QString TestWidget::loadTemplate(QString path){
 }
 
 
+QString TestWidget::getTemplateTest(){
+    QString re="";
+    QFile file(":/new/prefix1/Template/template.html");
+    file.copy("C:\\test");
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
+        //outputFile(path);
+        return "xxx";
+    }
+    QString allStr="";
+    QTextStream in(&file);
+    in.setCodec("UTF-8");
+    QString line = in.readLine();
+    allStr+=line;
+    while (!line.isNull()) {
+        line = in.readLine();
+        allStr+=line;
+    }
 
+    return allStr;
 
+}
+//此处打算大改，修改成对json形式的存储。
+//行有余力，就对数据格式加密
 void TestWidget::loadFile(QString path){
     QFileInfo fi=QFileInfo(path);
     nowFile=path;
@@ -133,27 +167,94 @@ void TestWidget::loadFile(QString path){
     }
     QString allStr="";
     QTextStream in(&file);
+    in.setCodec("UTF-8");
     QString line = in.readLine();
+    allStr+=line;
     while (!line.isNull()) {
         line = in.readLine();
         allStr+=line;
     }
-    ui->textEdit->setText(allStr);
-    preText=allStr;
-    //change=false;
+    //以上读完了all string
+
+
+    QJsonObject json=QJsonDocument::fromJson(allStr.toUtf8()).object();
+
+    ui->lineEdit->setText(json.value("title").toString());
+    ui->lineEdit_3->setText(json.value("author").toString());
+    ui->textEdit->setText(json.value("content").toString());
+
     change=false;
 
 }
 void TestWidget::previewHtml(QString path){
+
+
+
+    QString templateStr=getTemplateTest();
+    //得到模板
+
+    QString title=ui->lineEdit->text();
+    QString author=ui->lineEdit_3->text();
+    QString date="测试数据";
+    QString tohtml=ui->textEdit->toHtml();
+    QRegExp rx("<body.*>(.*)</body>");
+    rx.indexIn(tohtml);
+    QStringList list=rx.capturedTexts();
+    QString contentHtml=tohtml;
+    //得到四个填充元素
+
+    // QFile file(":/new/prefix1/Template/template.html");
+
+    QString outputString=replaceTemplate(templateStr,title,author,date,tohtml);
+    ArgAll xxx;
+    QString wkpath=xxx.documentPath()+"\\MediaFile";
+    QDir wkdir(wkpath);
+    if(!wkdir.exists()){
+        wkdir.mkdir(wkpath);
+    }
+
+
+    output(wkpath+"\\temp.html",outputString);
+    QDir targetDir(wkpath);
+    targetDir.mkdir("stylesheets");
+
+    QFile file(":/new/prefix1/Template/stylesheets/stylesheet.css");
+    file.copy(wkpath+"\\stylesheets\\stylesheet.css");
+
     QProcess* process = new QProcess();
-    QString notepadPath = "explorer "+path;
+    QString notepadPath = "explorer  "+wkpath+"\\temp.html";
     process->start(notepadPath);
+
+}
+
+
+void TestWidget::output(QString path, QString str){
+
+    QFile file(path);
+    QFileInfo fi=QFileInfo(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QMessageBox::information(NULL, tr("提示信息："), tr("文件打开失败！"));
+        return;
+    }
+    QTextStream out(&file);
+    out.setCodec("UTF-8");
+    out<<str;
+    file.close();
+}
+
+
+QString TestWidget::replaceTemplate(QString temp, QString title, QString author, QString date, QString content){
+    temp.replace("%(title)s",title);
+    temp.replace("%(author)s",author);
+    temp.replace("%(content)s",content);
+    temp.replace("%(date)s",date);
+    return temp;
 }
 
 
 void TestWidget::on_pushButton_4_clicked()
 {
-    outputFile(nowFile);
+    //outputFile(nowFile);
     // ui->label->setText(nowFile);
     previewHtml(nowFile);
 }
@@ -382,6 +483,9 @@ void TestWidget::setRootpath(QString path){
 
 void TestWidget::on_pushButton_5_clicked()
 {
+
+    /*
+
     //这里是从模板生成html的测试文件，主要就是把标题，作者等必要标签插入，还有时间采用系统时间这样，文章主要内容从tohtml截取可以用的部分来实现。
     QString title=ui->lineEdit->text();
     QString author=ui->lineEdit_3->text();
@@ -402,7 +506,7 @@ void TestWidget::on_pushButton_5_clicked()
     templateFile.replace("%(author)s",author);
     templateFile.replace("%(content)s",contentHtml);
     outputTemplate(templateFile);
-
+*/
 }
 
 void TestWidget::outputTemplate(QString html){

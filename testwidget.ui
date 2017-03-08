@@ -246,7 +246,7 @@
      <item>
       <widget class="QPushButton" name="pushButton_4">
        <property name="text">
-        <string>生成并预览</string>
+        <string>预览</string>
        </property>
       </widget>
      </item>

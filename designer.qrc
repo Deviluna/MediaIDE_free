@@ -3,5 +3,11 @@
         <file>Images/log.png</file>
         <file>Images/favicon.ico</file>
         <file>Images/tb.ico</file>
+        <file>Template/template.html</file>
+        <file>Template/stylesheets/deviluna.css</file>
+        <file>Template/stylesheets/github-light.css</file>
+        <file>Template/stylesheets/normalize.css</file>
+        <file>Template/stylesheets/stylesheet.css</file>
+        <file>Template/stylesheets/wu.css</file>
     </qresource>
 </RCC>

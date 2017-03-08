@@ -290,7 +290,7 @@ void MainWindow::on_pushButton_7_clicked()
 {
     AddFileDialog *addDialog=new AddFileDialog(this);
     if(addDialog->exec()){
-        nowFile=rootPath+"\\"+addDialog->getinput()+".html";
+        nowFile=rootPath+"\\"+addDialog->getinput()+".m";
         loadFile(nowFile);
         //refreshTree();
     }
