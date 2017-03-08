@@ -12,3 +12,8 @@ QString ArgAll::documentPath(){
 
     return QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation).replace("/","\\");
 }
+QString ArgAll::configPath(){
+
+    return  QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation).replace("/","\\")+"\\MediaIDEFile";
+
+}

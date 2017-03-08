@@ -178,13 +178,11 @@ void TestWidget::loadFile(QString path){
 
 
     QJsonObject json=QJsonDocument::fromJson(allStr.toUtf8()).object();
-
     ui->lineEdit->setText(json.value("title").toString());
     ui->lineEdit_3->setText(json.value("author").toString());
     ui->textEdit->setText(json.value("content").toString());
 
     change=false;
-
 }
 void TestWidget::previewHtml(QString path){
 
@@ -207,7 +205,7 @@ void TestWidget::previewHtml(QString path){
 
     QString outputString=replaceTemplate(templateStr,title,author,date,tohtml);
     ArgAll xxx;
-    QString wkpath=xxx.documentPath()+"\\MediaFile";
+    QString wkpath=xxx.configPath();
     QDir wkdir(wkpath);
     if(!wkdir.exists()){
         wkdir.mkdir(wkpath);

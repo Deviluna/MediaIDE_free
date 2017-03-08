@@ -56,6 +56,7 @@ private slots:
 
     void deleteDir();
 
+    void generate();
 
  private:
     void setupMenu();

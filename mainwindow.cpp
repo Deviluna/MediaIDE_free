@@ -24,6 +24,7 @@
 #include <welcomedialog.h>
 #include <rmdirdialog.h>
 #include <testpage.h>
+#include <generatedialog.h>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -47,7 +48,19 @@ void MainWindow::setupMenu(){
     connect(ui->actionAbout,SIGNAL(triggered()),this,SLOT(about()));
     connect(ui->actionCreate,SIGNAL(triggered()),this,SLOT(createProject()));
     connect(ui->actionOpen,SIGNAL(triggered()),this,SLOT(openProject()));
+    connect(ui->actionX,SIGNAL(triggered()),this,SLOT(generate()));
 }
+
+
+void MainWindow::generate(){
+    GenerateDialog *gDialog=new GenerateDialog(this);
+    gDialog->setProjectPath(rootPath);
+    gDialog->exec();
+
+
+
+}
+
 
 void MainWindow::initProgramme(){
 
@@ -66,10 +79,7 @@ void MainWindow::initProgramme(){
 void MainWindow::closeAllTab(){
     for(int i=0;i<ui->tabWidget->count();i++){
         ui->tabWidget->removeTab(0);
-
     }
-
-
 }
 
 void MainWindow::CloseNowTab(){
@@ -144,7 +154,7 @@ void MainWindow::firstUse(){
 }
 
 void MainWindow::createProject(){
-   CreateProject();
+    CreateProject();
 }
 
 void MainWindow::CreateProject(){
@@ -163,7 +173,7 @@ void MainWindow::CreateProject(){
             if( ok ){
                 ui->label_2->setText(projectName);
                 loadProject(projectPath+"\\"+projectName);
-                QString path=rootPath+"\\"+"第一篇文.html";
+                QString path=rootPath+"\\"+"第一篇文.m";
                 QFile file(path);
                 QFileInfo fi=QFileInfo(path);
                 if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -222,12 +232,10 @@ void MainWindow::setTreeview(){
 void MainWindow::selectFile(const QModelIndex &index){
 
     if(!model->isDir(index)){
-        QString file= index.sibling(index.row(),0).data(0).toString();
-        nowFile=rootPath+"\\"+file;
-        loadFile(nowFile);
+        loadFile(model->filePath(index).replace("/","\\"));
     }
     else{
-        nowPath=model->filePath(index);
+        // nowPath=model->filePath(index);
     }
 }
 
@@ -271,15 +279,14 @@ void MainWindow::on_pushButton_clicked()
     //测试用按钮，以下是测试使用的代码
 
     QStringList args;
-        args.append("C:/test/test.py");
-        QProcess::execute(QString("Python.exe"), args);
+    args.append("C:/test/test.py");
+    QProcess::execute(QString("Python.exe"), args);
 }
 
 void MainWindow::addArticle(){
     AddFileDialog *addDialog=new AddFileDialog(this);
     if(addDialog->exec()){
-        nowFile=model->filePath(nowIndex)+"\\"+addDialog->getinput()+".html";
-        loadFile(nowFile);
+        loadFile(model->filePath(nowIndex)+"\\"+addDialog->getinput()+".m");
         //refreshTree();
     }
 }
@@ -288,12 +295,7 @@ void MainWindow::addArticle(){
 
 void MainWindow::on_pushButton_7_clicked()
 {
-    AddFileDialog *addDialog=new AddFileDialog(this);
-    if(addDialog->exec()){
-        nowFile=rootPath+"\\"+addDialog->getinput()+".m";
-        loadFile(nowFile);
-        //refreshTree();
-    }
+
 }
 
 void MainWindow::setMenuAction(){
@@ -331,7 +333,7 @@ void MainWindow::on_treeView_customContextMenuRequested(const QPoint &pos)
         nowIndex=model->index(rootPath,0);
         m_folderMenu=new QMenu(this);
         m_folderMenu->addAction("新建分类",this,SLOT(addDir()));
-        m_folderMenu->addAction("添加文章",this,SLOT(addArticle()));
+      //  m_folderMenu->addAction("添加文章",this,SLOT(addArticle()));
         m_folderMenu->exec(QCursor::pos());
 
     }
@@ -340,11 +342,11 @@ void MainWindow::on_treeView_customContextMenuRequested(const QPoint &pos)
 
 void MainWindow::deleteDir(){
     if(!model->rmdir(nowIndex)){
-    RmdirDialog *rmdir=new RmdirDialog(this);
-    if(rmdir->exec()){
-        model->remove(nowIndex);
+        RmdirDialog *rmdir=new RmdirDialog(this);
+        if(rmdir->exec()){
+            model->remove(nowIndex);
 
-    }
+        }
 
     }
 }
@@ -360,7 +362,7 @@ void MainWindow::addDir(){
     if(addDialog->exec()){
         QString dirName=addDialog->getinput();
         model->mkdir(nowIndex,dirName);
-}
+    }
 }
 
 

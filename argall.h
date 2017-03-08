@@ -8,7 +8,7 @@ class ArgAll
 public:
     ArgAll();
     QString documentPath();
-
+    QString configPath();
 };
 
 #endif // ARGALL_H

@@ -31,7 +31,41 @@ public:
     void findWord(QString word);
 
     ~TestWidget();
-
+    void outputFile();
+    void setBold();
+    void setBigger();
+    void setSmaller();
+    void cleanText();
+    void loadProject(QString path);
+    void addFile(QString fileName);
+    void previewHtml(QString path);
+    //void loadFile(QString path);
+    void outputFile(QString path);
+    void setTreeview();
+    void setColor(const QColor &c);
+    void setFont(const QFont &font);
+    void setUnderline();
+    void getNowtext();
+    void outputText();
+    void setQuickFont();
+    void outputTemplate(QString html);
+    QString loadTemplate(QString path);
+    void setQuickColor();
+    void setAlign(Qt::Alignment align);
+    void output(QString path,QString str);
+    void setMenuAction();
+    void insertImage();
+    QString replaceTemplate(QString temp,QString title,QString author,QString date,QString content);
+    QString getTemplateTest();
+    QString nowText;
+    QString nowFile;
+    QString rootPath;
+    QString nowPath;
+    QTimer *timer;
+    QFont quickFont;
+    QColor quickColor;
+    bool change;
+    QString preText;
 private slots:
     void on_pushButton_clicked();
 
@@ -78,41 +112,7 @@ private slots:
 
 private:
     Ui::TestWidget *ui;
-    void outputFile();
-    void setBold();
-    void setBigger();
-    void setSmaller();
-    void cleanText();
-    void loadProject(QString path);
-    void addFile(QString fileName);
-    void previewHtml(QString path);
-    //void loadFile(QString path);
-    void outputFile(QString path);
-    void setTreeview();
-    void setColor(const QColor &c);
-    void setFont(const QFont &font);
-    void setUnderline();
-    void getNowtext();
-    void outputText();
-    void setQuickFont();
-    void outputTemplate(QString html);
-    QString loadTemplate(QString path);
-    void setQuickColor();
-    void setAlign(Qt::Alignment align);
-    void output(QString path,QString str);
-    void setMenuAction();
-    void insertImage();
-    QString replaceTemplate(QString temp,QString title,QString author,QString date,QString content);
-    QString getTemplateTest();
-    QString nowText;
-    QString nowFile;
-    QString rootPath;
-    QString nowPath;
-    QTimer *timer;
-    QFont quickFont;
-    QColor quickColor;
-    bool change;
-    QString preText;
+
 };
 
 #endif // TESTWIDGET_H
