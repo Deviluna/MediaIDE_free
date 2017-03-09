@@ -67,11 +67,9 @@ void GenerateDialog::genHtml(QString path,QString dirPath){
     QDir lsdir(wkpath+dirPath);
     if(!lsdir.exists()){
         lsdir.mkpath(wkpath+dirPath);
-
     }
 
     ArgAll::outputFile(wkpath+dirPath+"\\"+strList[0]+".html",outputString);
-    //tw->output(wkpath+dirPath+"\\"+title+".html",outputString);
 
     QDir targetDir(wkpath+dirPath);
     targetDir.mkdir("stylesheets");

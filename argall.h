@@ -20,8 +20,9 @@ public:
     static bool modifyJson(QString Path,QString key,QString value);
     static bool createFile(QString path);
     static QStringList parseMSTJson(QString mstfilePath);
-
-
+    static bool addMSTTab(QString MSTPath,QString path);
+    static bool removeMSTTab(QString MSTPath,int i);//可以考虑使用ini i
+    static QString settingName();
 };
 
 #endif // ARGALL_H

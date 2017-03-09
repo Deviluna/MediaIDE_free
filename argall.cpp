@@ -8,7 +8,7 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QCoreApplication>
-
+#include <QDebug>
 
 ArgAll::ArgAll()
 {
@@ -70,14 +70,18 @@ QStringList ArgAll::parseMJson(QString path){
     QString allStr=ArgAll::readFile(path);
     QJsonObject json=QJsonDocument::fromJson(allStr.toUtf8()).object();
 
-//以下代码约定stringlist里面的个位含义
+    //以下代码约定stringlist里面的个位含义
     QString title=json.value("title").toString();
     QString author=json.value("author").toString();
     QString date="测试数据";
-    QString contentHtml=json.value("content").toString();
+    QString tohtml=json.value("content").toString();
 
+
+    QRegExp rx("<body.*>(.*)</body>");
+    rx.indexIn(tohtml);
+    QStringList list=rx.capturedTexts();
     QStringList strList;
-    strList<<title<<author<<contentHtml<<date;
+    strList<<title<<author<<list[0]<<date;
     return strList;
 }
 
@@ -97,9 +101,12 @@ QStringList ArgAll::parseMSTJson(QString path){
     QJsonObject json=QJsonDocument::fromJson(allStr.toUtf8()).object();
 
     QString projectName=json.value("name").toString();
+    QString openedTab=json.value("openedTab").toString();
 
     QStringList strList;
-    strList<<projectName;
+
+    strList<<projectName<<openedTab;
+
     return strList;
 }
 
@@ -116,7 +123,7 @@ bool ArgAll::modifyJson(QString path,QString key, QString value){
 
 
 bool ArgAll::modifyPSTJson(QString key, QString value){
-  ArgAll::modifyJson(ArgAll::getSettingPath(),key,value);
+    ArgAll::modifyJson(ArgAll::getSettingPath(),key,value);
 }
 
 
@@ -135,4 +142,46 @@ bool ArgAll::createFile(QString path){
     }
     QTextStream out(&file);
     return true;
+}
+
+bool ArgAll::addMSTTab(QString MSTPath, QString path){
+    QStringList mstList=ArgAll::parseMSTJson(MSTPath);
+    QString openedTab=mstList[1];
+
+    QStringList openedTabs=openedTab.split(",");
+    for (int i=0;i<openedTabs.length();i++){
+        if(openedTabs[i]==path)
+            return false;
+    }
+    QString re="";
+    if(mstList[1].length()>0)
+        re+=","+path;
+    else re=path;
+    ArgAll::modifyJson(MSTPath,"openedTab",mstList[1]+re);
+
+    return true;
+}
+bool ArgAll::removeMSTTab(QString MSTPath, int x){
+    QStringList mstList=ArgAll::parseMSTJson(MSTPath);
+    QStringList openedTabs=mstList[1].split(",");
+    QString newTabs="";
+
+    QList<QString>::Iterator it = openedTabs.begin(),itend = openedTabs.end();
+    int i=0;
+    int first=0;
+    for (int i=0;i<openedTabs.length(); i++){
+        if(i==x)
+            continue;
+        if(first==0)
+            first=1;
+        else
+            newTabs+=",";
+        newTabs+=openedTabs[i];
+    }
+    ArgAll::modifyJson(MSTPath,"openedTab",newTabs);
+}
+
+QString ArgAll::settingName(){
+    return "项目设置";
+
 }

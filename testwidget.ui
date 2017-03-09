@@ -254,6 +254,31 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>lineEdit</tabstop>
+  <tabstop>lineEdit_3</tabstop>
+  <tabstop>textEdit</tabstop>
+  <tabstop>lineEdit_2</tabstop>
+  <tabstop>pushButton_5</tabstop>
+  <tabstop>toolButton_6</tabstop>
+  <tabstop>pushButton_2</tabstop>
+  <tabstop>toolButton_10</tabstop>
+  <tabstop>pushButton</tabstop>
+  <tabstop>toolButton_5</tabstop>
+  <tabstop>pushButton_4</tabstop>
+  <tabstop>toolButton_3</tabstop>
+  <tabstop>toolButton_4</tabstop>
+  <tabstop>toolButton_13</tabstop>
+  <tabstop>toolButton_9</tabstop>
+  <tabstop>toolButton_7</tabstop>
+  <tabstop>toolButton</tabstop>
+  <tabstop>toolButton_2</tabstop>
+  <tabstop>toolButton_11</tabstop>
+  <tabstop>toolButton_12</tabstop>
+  <tabstop>pushButton_3</tabstop>
+  <tabstop>toolButton_8</tabstop>
+  <tabstop>toolButton_14</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

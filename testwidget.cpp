@@ -15,6 +15,8 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <argall.h>
+#include <QDebug>
+
 
 TestWidget::TestWidget(QWidget *parent) :
     QWidget(parent),
@@ -150,6 +152,8 @@ void TestWidget::loadFile(QString path){
 void TestWidget::previewHtml(QString path){
 
 
+//这里可以重构，复用代码
+
 
     QString templateStr=ArgAll::readFile(":/new/prefix1/Template/template.html");
 
@@ -157,14 +161,16 @@ void TestWidget::previewHtml(QString path){
     QString author=ui->lineEdit_3->text();
     QString date="测试数据";
     QString tohtml=ui->textEdit->toHtml();
+    qDebug()<<tohtml;
     QRegExp rx("<body.*>(.*)</body>");
     rx.indexIn(tohtml);
     QStringList list=rx.capturedTexts();
+
     //得到四个填充元素
 
     // QFile file(":/new/prefix1/Template/template.html");
     QStringList strList;
-    strList<<title<<author<<tohtml<<date;
+    strList<<title<<author<<list[0]<<date;
     QString outputString=ArgAll::replaceTemplate(templateStr,strList);
     QString wkpath=ArgAll::configPath();
     QDir wkdir(wkpath);

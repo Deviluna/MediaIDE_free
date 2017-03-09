@@ -67,7 +67,7 @@ void MainWindow::initProgramme(){
     QStringList settings=ArgAll::parsePSTJson(ArgAll::getSettingPath());
 
     if(settings[0]!=""){
-    loadProject(settings[0]);
+        loadProject(settings[0]);
     }
     else {
         firstUse();
@@ -104,7 +104,10 @@ void MainWindow::closeTab(int a){
         }
     }
     else
+    {
         ui->tabWidget->removeTab(a);
+        ArgAll::removeMSTTab(mstPath,a);
+    }
 }
 
 QWidget* MainWindow::Page(){
@@ -172,7 +175,7 @@ void MainWindow::CreateProject(){
                 loadFile(path);
                 //新建需要创建用户适配的json，之后projectName存在json里面，可以修改，每次load时候又显示出来。
                 //这里以后要修改projectpath的地方
-                mstPath=projectPath+"\\"+projectName+"\\"+projectName+".mst";
+                mstPath=projectPath+"\\"+projectName+"\\"+ArgAll::settingName();
                 ArgAll::createFile(mstPath);
                 ArgAll::modifyJson(mstPath,"name",projectName);
             }
@@ -183,24 +186,23 @@ void MainWindow::CreateProject(){
 void MainWindow::loadProject(QString path){
     rootPath=path;
     nowPath=path;
-    QFileInfo qfi(path);
-    mstPath=path+"\\"+qfi.baseName()+".mst";
+    mstPath=path+"\\"+ArgAll::settingName();
     refreshTree();
     closeAllTab();
-
-
-
     //为了保证鲁棒性，这里必须做修改。
     mstList=ArgAll::parseMSTJson(mstPath);
-
-
-
     ui->label_2->setText(mstList[0]);
     //加一段，写入path到json中。
-   ArgAll::modifyPSTJson("lastProject",path);
+    ArgAll::modifyPSTJson("lastProject",path);
+    QStringList openedTabs=ArgAll::parseMSTJson(mstPath)[1].split(",");
+
+    for (int i=0;i<openedTabs.length(); i++){
+        QString tabPath=openedTabs[i];
+        if(tabPath.length()>0)
+            loadFile(tabPath);
+    }
+
 }
-
-
 
 
 void MainWindow::update(){
@@ -248,6 +250,8 @@ void MainWindow::about(){
 }
 
 void MainWindow::loadFile(QString path){
+
+
     for(int i=0;i<ui->tabWidget->count();i++){
         TestWidget *tw=(TestWidget*)ui->tabWidget->widget(i);
         if(tw->getPath().compare(path)==0){
@@ -255,13 +259,11 @@ void MainWindow::loadFile(QString path){
             return ;
         }
     }
-
     QFileInfo fi=QFileInfo(path);
 
-    if(fi.suffix()=="mst")
+    if(fi.fileName()==ArgAll::settingName())
         //这里应该进入修改project setting的设置
         return ;
-
 
     TestWidget *page=new TestWidget;
     page->loadFile(path);
@@ -269,6 +271,7 @@ void MainWindow::loadFile(QString path){
     ui->tabWidget->insertTab(ui->tabWidget->count()+1,page,fi.baseName());
     ui->tabWidget->setCurrentIndex(ui->tabWidget->count()-1);
 
+    ArgAll::addMSTTab(mstPath,path);
 }
 
 
@@ -277,11 +280,7 @@ void MainWindow::addFile(QString fileName){
 
 
 
-void MainWindow::previewHtml(QString path){
-    QProcess* process = new QProcess();
-    QString notepadPath = "explorer "+path;
-    process->start(notepadPath);
-}
+
 
 void MainWindow::on_pushButton_clicked()
 {
@@ -296,7 +295,6 @@ void MainWindow::addArticle(){
     AddFileDialog *addDialog=new AddFileDialog(this);
     if(addDialog->exec()){
         loadFile(model->filePath(nowIndex).replace("/","\\")+"\\"+addDialog->getinput()+".m");
-        //refreshTree();
     }
 }
 
@@ -311,7 +309,11 @@ void MainWindow::setMenuAction(){
 
 }
 
+void MainWindow::renameDir(){
 
+
+
+}
 
 void MainWindow::on_treeView_customContextMenuRequested(const QPoint &pos)
 {
@@ -322,10 +324,10 @@ void MainWindow::on_treeView_customContextMenuRequested(const QPoint &pos)
 
     if(model->isDir(index)&&model->filePath(index).length()>0){
         m_folderMenu=new QMenu(this);
-
         m_folderMenu->addAction("新建分类",this,SLOT(addDir()));
         m_folderMenu->addAction("添加文章",this,SLOT(addArticle()));
         m_folderMenu->addSeparator();
+        m_folderMenu->addAction("重命名",this,SLOT(renameDir()));
         m_folderMenu->addAction("删除",this,SLOT(deleteDir()));
         m_folderMenu->exec(QCursor::pos());
     }
@@ -345,7 +347,7 @@ void MainWindow::on_treeView_customContextMenuRequested(const QPoint &pos)
         nowIndex=model->index(rootPath,0);
         m_folderMenu=new QMenu(this);
         m_folderMenu->addAction("新建分类",this,SLOT(addDir()));
-      //  m_folderMenu->addAction("添加文章",this,SLOT(addArticle()));
+        //  m_folderMenu->addAction("添加文章",this,SLOT(addArticle()));
         m_folderMenu->exec(QCursor::pos());
 
     }
@@ -364,13 +366,25 @@ void MainWindow::deleteDir(){
 }
 
 void MainWindow::deleteFile(){
+
+    QString path=model->filePath(nowIndex).replace("/","\\");
+    for(int i=0;i<ui->tabWidget->count();i++){
+        TestWidget *tw=(TestWidget*)ui->tabWidget->widget(i);
+        if(tw->getPath().compare(path)==0){
+            ui->tabWidget->removeTab(i);
+            ArgAll::removeMSTTab(mstPath,i);
+        }
+
+
+    }
     model->remove(nowIndex);
+    //如果开着的话，要在tab里面关闭
+
 }
 
 void MainWindow::addDir(){
 
     addDirDialog *addDialog=new addDirDialog(this);
-
     if(addDialog->exec()){
         QString dirName=addDialog->getinput();
         model->mkdir(nowIndex,dirName);

@@ -29,6 +29,7 @@ private slots:
 
     void createProject();
 
+    void renameDir();
 
     void closeTab(int a);
 
@@ -70,7 +71,6 @@ private slots:
     void cleanText();
     void loadProject(QString path);
     void addFile(QString fileName);
-    void previewHtml(QString path);
     void loadFile(QString path);
     void outputFile(QString path);
     void setTreeview();
