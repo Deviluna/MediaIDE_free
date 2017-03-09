@@ -83,7 +83,6 @@ void TestWidget::outputFile(QString path){
     json.insert("content", content);
     QString nowText=QString(QJsonDocument(json).toJson());
 
-
     QFile file(path);
     QFileInfo fi=QFileInfo(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -110,48 +109,8 @@ QString TestWidget::getPath(){
     return nowFile;
 }
 
-QString TestWidget::loadTemplate(QString path){
-    QFile file(path);
-    QString allStr="";
-
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
-        QMessageBox::information(this,tr("注意"),tr("糟糕， 模板丢失"),QMessageBox::Ok);
-    }
 
 
-    QTextStream in(&file);
-    QString line = in.readLine();
-    allStr+=line;
-    while (!line.isNull()) {
-        line = in.readLine();
-        allStr+=line;
-    }
-
-    return allStr;
-}
-
-
-QString TestWidget::getTemplateTest(){
-    QString re="";
-    QFile file(":/new/prefix1/Template/template.html");
-    file.copy("C:\\test");
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
-        //outputFile(path);
-        return "xxx";
-    }
-    QString allStr="";
-    QTextStream in(&file);
-    in.setCodec("UTF-8");
-    QString line = in.readLine();
-    allStr+=line;
-    while (!line.isNull()) {
-        line = in.readLine();
-        allStr+=line;
-    }
-
-    return allStr;
-
-}
 //此处打算大改，修改成对json形式的存储。
 //行有余力，就对数据格式加密
 void TestWidget::loadFile(QString path){
@@ -188,8 +147,7 @@ void TestWidget::previewHtml(QString path){
 
 
 
-    QString templateStr=getTemplateTest();
-    //得到模板
+    QString templateStr=ArgAll::readFile(":/new/prefix1/Template/template.html");
 
     QString title=ui->lineEdit->text();
     QString author=ui->lineEdit_3->text();
@@ -211,8 +169,8 @@ void TestWidget::previewHtml(QString path){
         wkdir.mkdir(wkpath);
     }
 
-
-    output(wkpath+"\\temp.html",outputString);
+    ArgAll::outputFile(wkpath+"\\temp.html",outputString);
+    //output(wkpath+"\\temp.html",outputString);
     QDir targetDir(wkpath);
     targetDir.mkdir("stylesheets");
 
@@ -507,23 +465,4 @@ void TestWidget::on_pushButton_5_clicked()
 */
 }
 
-void TestWidget::outputTemplate(QString html){
-    QString path=rootPath+"\\"+"templatest.html";
-    QFile file(rootPath+"\\"+"templatest.html");
 
-    QFileInfo fi=QFileInfo(path);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QMessageBox::information(NULL, tr("提示信息："), tr("文件打开失败！"));
-        return;
-    }
-    QTextStream out(&file);
-    out.setCodec("UTF-8");
-    out<<html;
-    file.close();
-    //目前保存功能移植完毕，但是由于treeview在主界面 所以没有刷新。
-    if(fi.baseName()!=ui->lineEdit->text()){
-        file.rename(fi.absolutePath()+"\\"+ui->lineEdit->text()+".html");
-        loadFile(fi.absolutePath()+"\\"+ui->lineEdit->text()+".html");
-    }
-
-}

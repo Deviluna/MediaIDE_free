@@ -30,6 +30,7 @@ void CreateProjectDialog::firstUse(){
 void CreateProjectDialog::on_pushButton_clicked()
 {
     QFileDialog* fileDialog = new QFileDialog(this);
+    fileDialog->setDirectory(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
     fileDialog->setWindowTitle(tr("打开文件夹"));
     fileDialog->setFileMode(QFileDialog::Directory);
     if(fileDialog->exec() == QDialog::Accepted) {

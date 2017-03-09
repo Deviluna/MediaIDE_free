@@ -48,15 +48,12 @@ public:
     void getNowtext();
     void outputText();
     void setQuickFont();
-    void outputTemplate(QString html);
-    QString loadTemplate(QString path);
     void setQuickColor();
     void setAlign(Qt::Alignment align);
     void output(QString path,QString str);
     void setMenuAction();
     void insertImage();
     QString replaceTemplate(QString temp,QString title,QString author,QString date,QString content);
-    QString getTemplateTest();
     QString nowText;
     QString nowFile;
     QString rootPath;

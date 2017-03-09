@@ -12,6 +12,10 @@
 #include <QProcess>
 #include <QFileInfo>
 #include <QDebug>
+#include <QFileDialog>
+#include <argall.h>
+
+
 
 GenerateDialog::GenerateDialog(QWidget *parent) :
     QDialog(parent),
@@ -60,7 +64,7 @@ void GenerateDialog::genHtml(QString path,QString dirPath){
     QJsonObject json=QJsonDocument::fromJson(allStr.toUtf8()).object();
     //把单纯得到QString的函数移植到argall
 
-    QString templateStr=tw->getTemplateTest();
+    QString templateStr=ArgAll::readFile(ArgAll::getTemplatePath());
     QString title=json.value("title").toString();
     QString author=json.value("author").toString();
     QString date="测试数据";
@@ -111,5 +115,10 @@ void GenerateDialog::genDir(QString path,QString dirPath){
             //ui->label->setText(mfi.filePath());
         }
     }
+
+}
+
+void GenerateDialog::on_pushButton_3_clicked()
+{
 
 }

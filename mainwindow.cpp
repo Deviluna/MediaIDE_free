@@ -25,7 +25,7 @@
 #include <rmdirdialog.h>
 #include <testpage.h>
 #include <generatedialog.h>
-
+#include <QStandardPaths>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -123,6 +123,7 @@ QWidget* MainWindow::Page(){
 
 void MainWindow::openProject(){
     QFileDialog* fileDialog = new QFileDialog(this);
+    fileDialog->setDirectory(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
     fileDialog->setWindowTitle(tr("打开项目"));
     fileDialog->setFileMode(QFileDialog::Directory);
     if(fileDialog->exec() == QDialog::Accepted) {
@@ -149,8 +150,11 @@ void MainWindow::OpenProject(){
 }
 
 void MainWindow::firstUse(){
+
+    //这里要创建一个json，好好读写，应该再argall里面设置一个对json读写的方法，得到输入输出。
     WelcomeDialog *wDialog=new WelcomeDialog(this);
     wDialog->exec();
+
 }
 
 void MainWindow::createProject(){
