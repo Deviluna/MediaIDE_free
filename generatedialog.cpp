@@ -43,6 +43,8 @@ void GenerateDialog::on_pushButton_clicked()
     //生成时间到
     genDir(projectPath,"");
     ui->label->setText("done");
+    QProcess::startDetached("explorer "+ArgAll::configPath());
+
     //close();
 }
 void GenerateDialog::genHtml(QString path,QString dirPath){
@@ -53,20 +55,6 @@ void GenerateDialog::genHtml(QString path,QString dirPath){
     }
 
     QString templateStr=ArgAll::readFile(ArgAll::getTemplatePath());
-
-    /*
-    QString allStr=ArgAll::readFile(path);
-    QJsonObject json=QJsonDocument::fromJson(allStr.toUtf8()).object();
-    QString title=json.value("title").toString();
-    QString author=json.value("author").toString();
-    QString date="测试数据";
-    QString contentHtml=json.value("content").toString();
-    //重构指导，这里把json解析得到的各种东西放到map或者stringlist里面之后再传递进来，提升复用性。
-
-    QStringList strList;
-    strList<<title<<author<<date<<contentHtml;
-    */
-
     QStringList strList=ArgAll::parseMJson(path);
 
     QString outputString=ArgAll::replaceTemplate(templateStr,strList);

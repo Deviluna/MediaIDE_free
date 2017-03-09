@@ -97,6 +97,8 @@ private slots:
     QColor quickColor;
     QModelIndex nowIndex;
     QString prootPath;
+    QString mstPath;
+    QStringList mstList;
 
 };
 

@@ -26,15 +26,17 @@
 #include <testpage.h>
 #include <generatedialog.h>
 #include <QStandardPaths>
+#include <argall.h>
+#include <qstringlist.h>
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::
+MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     this->setWindowState(Qt::WindowMaximized);
     ui->setupUi(this);
     setupMenu();
-    loadProject(rootPath);
     setTreeview();
     initTabWidget();
 }
@@ -60,12 +62,12 @@ void MainWindow::generate(){
 
 
 void MainWindow::initProgramme(){
+    QFile file(ArgAll::getSettingPath());
 
-    prootPath=QCoreApplication::applicationDirPath();
-    ui->label_2->setText(prootPath);
-    QFile file(prootPath+"\\"+"userinfo.ini");
-    if(file.exists()){
+    QStringList settings=ArgAll::parsePSTJson(ArgAll::getSettingPath());
 
+    if(settings[0]!=""){
+    loadProject(settings[0]);
     }
     else {
         firstUse();
@@ -88,14 +90,6 @@ void MainWindow::initTabWidget(){
 
     connect(ui->tabWidget,SIGNAL(tabCloseRequested(int)),this,SLOT(closeTab(int)));
     closeAllTab();
-
-
-    //测试段函数
-    TestPage *lsPage=new TestPage;
-    ui->tabWidget->insertTab(ui->tabWidget->count()+1,lsPage,"test page");
-
-
-
 }
 
 
@@ -171,30 +165,39 @@ void MainWindow::CreateProject(){
         {
             bool ok = project->mkdir(projectPath+"\\"+projectName);
             if( ok ){
-                ui->label_2->setText(projectName);
                 loadProject(projectPath+"\\"+projectName);
-                QString path=rootPath+"\\"+"第一篇文.m";
-                QFile file(path);
-                QFileInfo fi=QFileInfo(path);
-                if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-                    QMessageBox::information(NULL, tr("提示信息："), tr("文件打开失败！"));
-                    return;
-                }
-                QTextStream out(&file);
-                refreshTree();
+                project->mkdir(projectPath+"\\"+projectName+"\\"+"分类一");
+                QString path=projectPath+"\\"+projectName+"\\分类一\\第一篇文章.m";
+                ArgAll::createFile(path);
                 loadFile(path);
+                //新建需要创建用户适配的json，之后projectName存在json里面，可以修改，每次load时候又显示出来。
+                //这里以后要修改projectpath的地方
+                mstPath=projectPath+"\\"+projectName+"\\"+projectName+".mst";
+                ArgAll::createFile(mstPath);
+                ArgAll::modifyJson(mstPath,"name",projectName);
             }
         }
-
-
     }
 }
 
 void MainWindow::loadProject(QString path){
     rootPath=path;
     nowPath=path;
+    QFileInfo qfi(path);
+    mstPath=path+"\\"+qfi.baseName()+".mst";
     refreshTree();
     closeAllTab();
+
+
+
+    //为了保证鲁棒性，这里必须做修改。
+    mstList=ArgAll::parseMSTJson(mstPath);
+
+
+
+    ui->label_2->setText(mstList[0]);
+    //加一段，写入path到json中。
+   ArgAll::modifyPSTJson("lastProject",path);
 }
 
 
@@ -254,6 +257,12 @@ void MainWindow::loadFile(QString path){
     }
 
     QFileInfo fi=QFileInfo(path);
+
+    if(fi.suffix()=="mst")
+        //这里应该进入修改project setting的设置
+        return ;
+
+
     TestWidget *page=new TestWidget;
     page->loadFile(path);
     page->setRootpath(rootPath);
@@ -286,7 +295,7 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::addArticle(){
     AddFileDialog *addDialog=new AddFileDialog(this);
     if(addDialog->exec()){
-        loadFile(model->filePath(nowIndex)+"\\"+addDialog->getinput()+".m");
+        loadFile(model->filePath(nowIndex).replace("/","\\")+"\\"+addDialog->getinput()+".m");
         //refreshTree();
     }
 }
@@ -322,6 +331,9 @@ void MainWindow::on_treeView_customContextMenuRequested(const QPoint &pos)
     }
     else if(model->filePath(index).length()>0){
 
+        QFileInfo qfi(model->filePath(index));
+        if(qfi.suffix()=="mst")
+            return ;
         m_fileMenu=new QMenu(this);
         //这里虽然实现，但是有问题，讲道理应该用槽来传递变量，但是直接用全局变量。
         //不合规范

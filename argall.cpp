@@ -7,6 +7,8 @@
 #include <QFileInfo>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QCoreApplication>
+
 
 ArgAll::ArgAll()
 {
@@ -25,7 +27,7 @@ QString  ArgAll::readFile(QString path){
     QFile file(path);
     QString allStr="";
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
-        return "bad read!!!";
+        return "";
     }
     QTextStream in(&file);
     in.setCodec("UTF-8");
@@ -75,6 +77,62 @@ QStringList ArgAll::parseMJson(QString path){
     QString contentHtml=json.value("content").toString();
 
     QStringList strList;
-    strList<<title<<author<<date<<contentHtml;
+    strList<<title<<author<<contentHtml<<date;
     return strList;
+}
+
+QStringList ArgAll::parsePSTJson(QString path){
+    QString allStr=ArgAll::readFile(path);
+    QJsonObject json=QJsonDocument::fromJson(allStr.toUtf8()).object();
+
+    QString lastProject=json.value("lastProject").toString();
+
+    QStringList strList;
+    strList<<lastProject;
+    return strList;
+}
+
+QStringList ArgAll::parseMSTJson(QString path){
+    QString allStr=ArgAll::readFile(path);
+    QJsonObject json=QJsonDocument::fromJson(allStr.toUtf8()).object();
+
+    QString projectName=json.value("name").toString();
+
+    QStringList strList;
+    strList<<projectName;
+    return strList;
+}
+
+bool ArgAll::modifyJson(QString path,QString key, QString value){
+    QString allStr=ArgAll::readFile(path);
+    QJsonObject json=QJsonDocument::fromJson(allStr.toUtf8()).object();
+    json.remove(key);
+    json.insert(key,value);
+    QString output=QString(QJsonDocument(json).toJson());
+    ArgAll::outputFile(path,output);
+}
+
+
+
+
+bool ArgAll::modifyPSTJson(QString key, QString value){
+  ArgAll::modifyJson(ArgAll::getSettingPath(),key,value);
+}
+
+
+
+QString ArgAll::getSettingPath(){
+
+    return QCoreApplication::applicationDirPath()+"\\userinfo.pst";
+
+}
+
+bool ArgAll::createFile(QString path){
+
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        return false;
+    }
+    QTextStream out(&file);
+    return true;
 }

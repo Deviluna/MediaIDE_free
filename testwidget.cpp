@@ -83,6 +83,8 @@ void TestWidget::outputFile(QString path){
     json.insert("author", author);
     json.insert("date", date);
     json.insert("content", content);
+
+
     QString nowText=QString(QJsonDocument(json).toJson());
 
     QFile file(path);
@@ -158,12 +160,11 @@ void TestWidget::previewHtml(QString path){
     QRegExp rx("<body.*>(.*)</body>");
     rx.indexIn(tohtml);
     QStringList list=rx.capturedTexts();
-    QString contentHtml=tohtml;
     //得到四个填充元素
 
     // QFile file(":/new/prefix1/Template/template.html");
     QStringList strList;
-    strList<<title<<author<<date<<tohtml;
+    strList<<title<<author<<tohtml<<date;
     QString outputString=ArgAll::replaceTemplate(templateStr,strList);
     QString wkpath=ArgAll::configPath();
     QDir wkdir(wkpath);
@@ -186,19 +187,6 @@ void TestWidget::previewHtml(QString path){
 }
 
 
-void TestWidget::output(QString path, QString str){
-
-    QFile file(path);
-    QFileInfo fi=QFileInfo(path);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QMessageBox::information(NULL, tr("提示信息："), tr("文件打开失败！"));
-        return;
-    }
-    QTextStream out(&file);
-    out.setCodec("UTF-8");
-    out<<str;
-    file.close();
-}
 
 
 
