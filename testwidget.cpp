@@ -71,6 +71,8 @@ void TestWidget::findWord(QString word){
 
 
 void TestWidget::outputFile(QString path){
+    //建议都改掉，都传MAP或者stringlist，现在参数太多了。
+    //如果用stringlist性能应该会好一点，后面跟着改东西应该也少一点，用stringlist把。
 
     QString content=ui->textEdit->toHtml();
     QString author=ui->lineEdit_3->text();
@@ -160,10 +162,10 @@ void TestWidget::previewHtml(QString path){
     //得到四个填充元素
 
     // QFile file(":/new/prefix1/Template/template.html");
-
-    QString outputString=replaceTemplate(templateStr,title,author,date,tohtml);
-    ArgAll xxx;
-    QString wkpath=xxx.configPath();
+    QStringList strList;
+    strList<<title<<author<<date<<tohtml;
+    QString outputString=ArgAll::replaceTemplate(templateStr,strList);
+    QString wkpath=ArgAll::configPath();
     QDir wkdir(wkpath);
     if(!wkdir.exists()){
         wkdir.mkdir(wkpath);
@@ -199,13 +201,7 @@ void TestWidget::output(QString path, QString str){
 }
 
 
-QString TestWidget::replaceTemplate(QString temp, QString title, QString author, QString date, QString content){
-    temp.replace("%(title)s",title);
-    temp.replace("%(author)s",author);
-    temp.replace("%(content)s",content);
-    temp.replace("%(date)s",date);
-    return temp;
-}
+
 
 
 void TestWidget::on_pushButton_4_clicked()
@@ -429,7 +425,6 @@ void TestWidget::on_toolButton_14_clicked()
 
 void TestWidget::on_lineEdit_2_textChanged(const QString &arg1)
 {
-    //findWord(arg1);
 
 }
 void TestWidget::setRootpath(QString path){
@@ -440,29 +435,7 @@ void TestWidget::setRootpath(QString path){
 void TestWidget::on_pushButton_5_clicked()
 {
 
-    /*
 
-    //这里是从模板生成html的测试文件，主要就是把标题，作者等必要标签插入，还有时间采用系统时间这样，文章主要内容从tohtml截取可以用的部分来实现。
-    QString title=ui->lineEdit->text();
-    QString author=ui->lineEdit_3->text();
-    QString content=ui->textEdit->toPlainText();
-    QString templateFile=loadTemplate(rootPath+"\\"+"template.html");
-    //以上将模板库和必要数据读入
-
-
-    QString tohtml=ui->textEdit->toHtml();
-    QRegExp rx("<body.*>(.*)</body>");
-    rx.indexIn(tohtml);
-    QStringList list=rx.capturedTexts();
-    QString contentHtml=tohtml;
-
-    ui->textEdit->setText(tohtml+"i have do sth");
-
-    templateFile.replace("%(title)s",title);
-    templateFile.replace("%(author)s",author);
-    templateFile.replace("%(content)s",contentHtml);
-    outputTemplate(templateFile);
-*/
 }
 
 

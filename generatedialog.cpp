@@ -3,7 +3,6 @@
 #include <QFileInfo>
 #include <QJsonObject>
 #include <testwidget.h>
-#include <argall.h>
 #include <QTextStream>
 #include <QJsonDocument>
 #include <QString>
@@ -52,29 +51,26 @@ void GenerateDialog::genHtml(QString path,QString dirPath){
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
         return;
     }
-    QString allStr="";
-    QTextStream in(&file);
-    in.setCodec("UTF-8");
-    QString line = in.readLine();
-    allStr+=line;
-    while (!line.isNull()) {
-        line = in.readLine();
-        allStr+=line;
-    }
-    QJsonObject json=QJsonDocument::fromJson(allStr.toUtf8()).object();
-    //把单纯得到QString的函数移植到argall
 
     QString templateStr=ArgAll::readFile(ArgAll::getTemplatePath());
+
+    /*
+    QString allStr=ArgAll::readFile(path);
+    QJsonObject json=QJsonDocument::fromJson(allStr.toUtf8()).object();
     QString title=json.value("title").toString();
     QString author=json.value("author").toString();
     QString date="测试数据";
     QString contentHtml=json.value("content").toString();
+    //重构指导，这里把json解析得到的各种东西放到map或者stringlist里面之后再传递进来，提升复用性。
 
-    // QFile file(":/new/prefix1/Template/template.html");
+    QStringList strList;
+    strList<<title<<author<<date<<contentHtml;
+    */
 
-    QString outputString=tw->replaceTemplate(templateStr,title,author,date,contentHtml);
-    ArgAll xxx;
-    QString wkpath=xxx.configPath();
+    QStringList strList=ArgAll::parseMJson(path);
+
+    QString outputString=ArgAll::replaceTemplate(templateStr,strList);
+    QString wkpath=ArgAll::configPath();
     QDir wkdir(wkpath);
     if(!wkdir.exists()){
         wkdir.mkdir(wkpath);
@@ -85,14 +81,13 @@ void GenerateDialog::genHtml(QString path,QString dirPath){
         lsdir.mkpath(wkpath+dirPath);
 
     }
-    qDebug()<<wkpath+"  "+dirPath+"   "+title;
 
-
-    tw->output(wkpath+dirPath+"\\"+title+".html",outputString);
+    ArgAll::outputFile(wkpath+dirPath+"\\"+strList[0]+".html",outputString);
+    //tw->output(wkpath+dirPath+"\\"+title+".html",outputString);
 
     QDir targetDir(wkpath+dirPath);
     targetDir.mkdir("stylesheets");
-//这里要注意 css最好能复用。。。
+    //这里要注意 css最好能复用。。。
     QFile file2(":/new/prefix1/Template/stylesheets/stylesheet.css");
     file2.copy(wkpath+dirPath+"\\stylesheets\\stylesheet.css");
 
@@ -111,7 +106,7 @@ void GenerateDialog::genDir(QString path,QString dirPath){
         }else
         {
             if(mfi.fileName()!="."&&mfi.fileName()!="..")
-            genDir(mfi.filePath(),dirPath+"\\"+mfi.fileName());
+                genDir(mfi.filePath(),dirPath+"\\"+mfi.fileName());
             //ui->label->setText(mfi.filePath());
         }
     }

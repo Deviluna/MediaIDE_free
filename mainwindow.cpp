@@ -56,9 +56,6 @@ void MainWindow::generate(){
     GenerateDialog *gDialog=new GenerateDialog(this);
     gDialog->setProjectPath(rootPath);
     gDialog->exec();
-
-
-
 }
 
 
@@ -136,7 +133,6 @@ void MainWindow::openProject(){
 }
 
 void MainWindow::OpenProject(){
-    //close();
     QFileDialog* fileDialog = new QFileDialog(this);
     fileDialog->setWindowTitle(tr("打开项目"));
     fileDialog->setFileMode(QFileDialog::Directory);
@@ -388,7 +384,6 @@ void MainWindow::on_pushButton_8_clicked()
             else{
                 QMessageBox::warning(this,tr("创建分类"),tr("失败！"));
             }
-
         }
         refreshTree();
 
