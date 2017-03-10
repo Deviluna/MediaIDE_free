@@ -324,7 +324,7 @@ void MainWindow::on_treeView_customContextMenuRequested(const QPoint &pos)
 
     if(model->isDir(index)&&model->filePath(index).length()>0){
         m_folderMenu=new QMenu(this);
-        m_folderMenu->addAction("新建分类",this,SLOT(addDir()));
+        //m_folderMenu->addAction("新建分类",this,SLOT(addDir()));
         m_folderMenu->addAction("添加文章",this,SLOT(addArticle()));
         m_folderMenu->addSeparator();
         m_folderMenu->addAction("重命名",this,SLOT(renameDir()));

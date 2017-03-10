@@ -35,7 +35,8 @@ SOURCES += main.cpp\
     rmdirdialog.cpp \
     testpage.cpp \
     argall.cpp \
-    generatedialog.cpp
+    generatedialog.cpp \
+    introdialog.cpp
 
 HEADERS  += mainwindow.h \
     addfiledialog.h \
@@ -48,7 +49,8 @@ HEADERS  += mainwindow.h \
     rmdirdialog.h \
     testpage.h \
     argall.h \
-    generatedialog.h
+    generatedialog.h \
+    introdialog.h
 
 FORMS    += mainwindow.ui \
     addfiledialog.ui \
@@ -60,7 +62,8 @@ FORMS    += mainwindow.ui \
     wizard.ui \
     rmdirdialog.ui \
     testpage.ui \
-    generatedialog.ui
+    generatedialog.ui \
+    introdialog.ui
 
 RESOURCES += \
     designer.qrc

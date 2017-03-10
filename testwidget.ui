@@ -229,7 +229,7 @@
      <item>
       <widget class="QPushButton" name="pushButton_5">
        <property name="text">
-        <string>测试用按钮</string>
+        <string>简介</string>
        </property>
       </widget>
      </item>

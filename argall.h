@@ -23,6 +23,10 @@ public:
     static bool addMSTTab(QString MSTPath,QString path);
     static bool removeMSTTab(QString MSTPath,int i);//可以考虑使用ini i
     static QString settingName();
+    static QString listString();
+    static QString replacelistString(QString temp,QStringList strList);
+    static QString getReplacedIndex(QStringList strList);
+
 };
 
 #endif // ARGALL_H

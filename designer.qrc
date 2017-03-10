@@ -9,5 +9,7 @@
         <file>Template/stylesheets/normalize.css</file>
         <file>Template/stylesheets/stylesheet.css</file>
         <file>Template/stylesheets/wu.css</file>
+        <file>Template/index.html</file>
+        <file>Template/listString.txt</file>
     </qresource>
 </RCC>

@@ -1,0 +1,4 @@
+<h3><a  href="%(address)s" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link">%(title)s</span></a></h3>
+<p>%(introtext)s</p>
+         <div align="right"> <span class="site-footer-credits" align="right">%(date)s</span></div>
+<hr>

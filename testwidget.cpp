@@ -16,6 +16,8 @@
 #include <QJsonDocument>
 #include <argall.h>
 #include <QDebug>
+#include <QDateTime>
+#include <introdialog.h>
 
 
 TestWidget::TestWidget(QWidget *parent) :
@@ -79,14 +81,16 @@ void TestWidget::outputFile(QString path){
     QString content=ui->textEdit->toHtml();
     QString author=ui->lineEdit_3->text();
     QString title=ui->lineEdit->text();
-    QString date="日期功能待加入";
+    QString date=QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
     QJsonObject json;
+
+
     json.insert("title", title);
     json.insert("author", author);
-    json.insert("date", date);
+    json.insert("date",date) ;
     json.insert("content", content);
-
-
+    json.insert("intropic",mList[4]);
+    json.insert("introtext",mList[5]);
     QString nowText=QString(QJsonDocument(json).toJson());
 
     QFile file(path);
@@ -125,6 +129,9 @@ void TestWidget::loadFile(QString path){
     ui->lineEdit->setText(fi.baseName());
     ui->textEdit->setText("");
 
+    //下面这段函数主要是为了防止stringlist越界
+    mList=ArgAll::parseMJson(path);
+
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
         outputFile(path);
@@ -141,25 +148,27 @@ void TestWidget::loadFile(QString path){
     }
     //以上读完了all string
 
+    mList=ArgAll::parseMJson(path);
 
-    QJsonObject json=QJsonDocument::fromJson(allStr.toUtf8()).object();
-    ui->lineEdit->setText(json.value("title").toString());
-    ui->lineEdit_3->setText(json.value("author").toString());
-    ui->textEdit->setText(json.value("content").toString());
+    ui->lineEdit->setText(mList[0]);
+
+    ui->lineEdit_3->setText(mList[1]);
+
+     ui->textEdit->setText(mList[2]);
 
     change=false;
 }
 void TestWidget::previewHtml(QString path){
 
 
-//这里可以重构，复用代码
+    //这里可以重构，复用代码
 
 
     QString templateStr=ArgAll::readFile(":/new/prefix1/Template/template.html");
 
     QString title=ui->lineEdit->text();
     QString author=ui->lineEdit_3->text();
-    QString date="测试数据";
+    QString date=QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
     QString tohtml=ui->textEdit->toHtml();
     qDebug()<<tohtml;
     QRegExp rx("<body.*>(.*)</body>");
@@ -428,7 +437,11 @@ void TestWidget::setRootpath(QString path){
 
 void TestWidget::on_pushButton_5_clicked()
 {
-
+    //关于生成简介
+    IntroDialog *iDialog=new IntroDialog(this);
+    iDialog->setIntroPic(mList[4]);
+    iDialog->setIntroText(mList[5]);
+    iDialog->exec();
 
 }
 

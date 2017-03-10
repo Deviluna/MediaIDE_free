@@ -29,6 +29,9 @@ private:
     void genHtml(QString path,QString dirPath);
     TestWidget *tw;
     void genDir(QString path,QString dirPath);
+    void genIndex();
+
+    QString indexlist;
 };
 
 #endif // GENERATEDIALOG_H

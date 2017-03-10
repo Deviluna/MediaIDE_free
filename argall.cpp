@@ -63,6 +63,7 @@ QString ArgAll::replaceTemplate(QString temp, QStringList strList){
     temp.replace("%(author)s",strList[1]);
     temp.replace("%(content)s",strList[2]);
     temp.replace("%(date)s",strList[3]);
+
     return temp;
 }
 
@@ -73,15 +74,17 @@ QStringList ArgAll::parseMJson(QString path){
     //以下代码约定stringlist里面的个位含义
     QString title=json.value("title").toString();
     QString author=json.value("author").toString();
-    QString date="测试数据";
-    QString tohtml=json.value("content").toString();
+    QString date=json.value("date").toString();
+    QString content=json.value("content").toString();
+    QString intropic=json.value("intropic").toString();
+    QString introtext=json.value("introtext").toString();
+
+    //QString mdate=json.value("mdate").toString();
 
 
-    QRegExp rx("<body.*>(.*)</body>");
-    rx.indexIn(tohtml);
-    QStringList list=rx.capturedTexts();
+
     QStringList strList;
-    strList<<title<<author<<list[0]<<date;
+    strList<<title<<author<<content<<date<<intropic<<introtext;
     return strList;
 }
 
@@ -184,4 +187,26 @@ bool ArgAll::removeMSTTab(QString MSTPath, int x){
 QString ArgAll::settingName(){
     return "项目设置";
 
+}
+
+
+QString ArgAll::listString(){
+    QString re=ArgAll::readFile(":/new/prefix1/Template/listString.txt");
+    return re;
+}
+QString ArgAll::replacelistString(QString temp, QStringList strList){
+
+    temp.replace("%(address)s",strList[0]);
+    temp.replace("%(title)s",strList[1]);
+    temp.replace("%(introtext)s",strList[2]);
+    temp.replace("%(date)s",strList[3]);
+
+    return temp;
+}
+
+QString ArgAll::getReplacedIndex(QStringList strList){
+    QString temp=ArgAll::readFile(":/new/prefix1/Template/index.html");
+    temp.replace("%(lists)s",strList[0]);
+
+    return temp;
 }

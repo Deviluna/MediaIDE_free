@@ -62,6 +62,7 @@ public:
     QColor quickColor;
     bool change;
     QString preText;
+    QStringList mList;
 private slots:
     void on_pushButton_clicked();
 
