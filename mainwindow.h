@@ -24,6 +24,7 @@ public:
     void CreateProject();
     void OpenProject();
     void CloseNowTab();
+    void renameNowDir(QString newName);
     QWidget* Page();
 private slots:
 
@@ -58,6 +59,9 @@ private slots:
     void deleteDir();
 
     void generate();
+
+    void openInExplorer();
+
 
  private:
     void setupMenu();

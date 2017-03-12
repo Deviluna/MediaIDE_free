@@ -28,6 +28,9 @@
 #include <QStandardPaths>
 #include <argall.h>
 #include <qstringlist.h>
+#include <renamedialog.h>
+
+
 
 MainWindow::
 MainWindow(QWidget *parent) :
@@ -309,11 +312,27 @@ void MainWindow::setMenuAction(){
 
 }
 
-void MainWindow::renameDir(){
 
+void MainWindow::openInExplorer(){
+    qDebug()<<model->filePath(nowIndex);
+    QProcess::startDetached("explorer "+model->filePath(nowIndex).replace("/","\\"));
+
+}
+
+void MainWindow::renameDir(){
+    RenameDialog *rd=new RenameDialog(this);
+    rd->setNowName(model->fileName(nowIndex));
+    rd->exec();
 
 
 }
+
+
+void MainWindow::renameNowDir(QString newName){
+    //重命名
+
+}
+
 
 void MainWindow::on_treeView_customContextMenuRequested(const QPoint &pos)
 {
@@ -327,6 +346,8 @@ void MainWindow::on_treeView_customContextMenuRequested(const QPoint &pos)
         //m_folderMenu->addAction("新建分类",this,SLOT(addDir()));
         m_folderMenu->addAction("添加文章",this,SLOT(addArticle()));
         m_folderMenu->addSeparator();
+        m_folderMenu->addAction("在本地打开",this,SLOT(openInExplorer()));
+
         m_folderMenu->addAction("重命名",this,SLOT(renameDir()));
         m_folderMenu->addAction("删除",this,SLOT(deleteDir()));
         m_folderMenu->exec(QCursor::pos());
@@ -339,6 +360,7 @@ void MainWindow::on_treeView_customContextMenuRequested(const QPoint &pos)
         m_fileMenu=new QMenu(this);
         //这里虽然实现，但是有问题，讲道理应该用槽来传递变量，但是直接用全局变量。
         //不合规范
+        //m_fileMenu->addAction("在本地打开",this,SLOT(openInExplorer()));
         m_fileMenu->addAction("删除",this,SLOT(deleteFile()));
         m_fileMenu->exec(QCursor::pos());
     }
