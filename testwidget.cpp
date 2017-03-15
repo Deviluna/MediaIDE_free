@@ -170,7 +170,7 @@ void TestWidget::previewHtml(QString path){
     QString author=ui->lineEdit_3->text();
     QString date=QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
     QString tohtml=ui->textEdit->toHtml();
-    QRegExp rx("<body.*>(.*)</body>");
+    QRegExp rx("<body.*>\n(.*)</body>");
     rx.indexIn(tohtml);
     QStringList list=rx.capturedTexts();
 
@@ -178,7 +178,8 @@ void TestWidget::previewHtml(QString path){
 
     // QFile file(":/new/prefix1/Template/template.html");
     QStringList strList;
-    strList<<title<<author<<list[0]<<date;
+    qDebug()<<list[1];
+    strList<<title<<author<<list[1]<<date;
     QString outputString=ArgAll::replaceTemplate(templateStr,strList);
     QString wkpath=ArgAll::configPath();
     QDir wkdir(wkpath);
