@@ -9,6 +9,8 @@
 #include <QJsonDocument>
 #include <QCoreApplication>
 #include <QDebug>
+#include <QDir>
+
 
 ArgAll::ArgAll()
 {
@@ -42,8 +44,12 @@ QString  ArgAll::readFile(QString path){
 
 bool ArgAll::outputFile(QString path, QString content){
 
-    QFile file(path);
     QFileInfo fi=QFileInfo(path);
+
+
+    QFile file(path);
+
+
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QMessageBox::information(NULL, "提示信息：", "文件写入失败！");
         return false;
@@ -204,9 +210,17 @@ QString ArgAll::replacelistString(QString temp, QStringList strList){
     return temp;
 }
 
-QString ArgAll::getReplacedIndex(QStringList strList){
+QString ArgAll::getReplacedIndex(QStringList strList,QStringList dirList){
     QString temp=ArgAll::readFile(":/new/prefix1/Template/index.html");
     temp.replace("%(lists)s",strList[0]);
+    for(int i=0;i<dirList.length();i++){
+        temp.replace("%(classify"+QString::number(i+1)+")s",dirList[i]);
+    }
 
     return temp;
+}
+
+QString ArgAll::webURL(){
+    return "http://120.77.248.40";
+
 }

@@ -25,8 +25,8 @@ public:
     static QString settingName();
     static QString listString();
     static QString replacelistString(QString temp,QStringList strList);
-    static QString getReplacedIndex(QStringList strList);
-
+    static QString getReplacedIndex(QStringList strList,QStringList dirList);
+    static QString webURL();
 };
 
 #endif // ARGALL_H

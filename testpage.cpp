@@ -40,7 +40,6 @@ void TestPage::test(){
     json3.insert("picurl", "http://deviluna.com/appContent/pics/pic3.jpg");
     json3.insert("url", "http://deviluna.com/articles/article6.html");
     QJsonArray json_array;
-
     json_array.insert(0, json);
     json_array.insert(1, json2);
     json_array.insert(1, json3);

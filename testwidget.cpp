@@ -170,7 +170,6 @@ void TestWidget::previewHtml(QString path){
     QString author=ui->lineEdit_3->text();
     QString date=QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
     QString tohtml=ui->textEdit->toHtml();
-    qDebug()<<tohtml;
     QRegExp rx("<body.*>(.*)</body>");
     rx.indexIn(tohtml);
     QStringList list=rx.capturedTexts();

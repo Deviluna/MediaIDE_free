@@ -79,8 +79,10 @@ void MainWindow::initProgramme(){
 }
 
 void MainWindow::closeAllTab(){
-    for(int i=0;i<ui->tabWidget->count();i++){
+    int max=ui->tabWidget->count();
+    for(int i=0;i<max;i++){
         ui->tabWidget->removeTab(0);
+        //closeTab(i);
     }
 }
 
@@ -330,6 +332,34 @@ void MainWindow::renameDir(){
 
 void MainWindow::renameNowDir(QString newName){
     //重命名
+    QFileInfo qfi(model->filePath(nowIndex));
+
+
+
+    QString path=model->filePath(nowIndex).replace("/","\\");
+
+    for(int i=0;i<ui->tabWidget->count();i++){
+        TestWidget *tw=(TestWidget*)ui->tabWidget->widget(i);
+        QFileInfo lsqfi(tw->getPath());
+        if(lsqfi.canonicalPath()==qfi.filePath()){
+            ui->tabWidget->removeTab(i);
+            ArgAll::removeMSTTab(mstPath,i);
+
+        }
+    }
+
+
+
+
+
+    QFile::rename(qfi.filePath(),qfi.canonicalPath()+"\\"+newName);
+
+
+
+
+    //对应标签页面需要修改和mst文件
+    //应该只需要修改标签页，就自动适配好reload
+
 
 }
 
@@ -438,3 +468,8 @@ void MainWindow::on_pushButton_8_clicked()
     }
 }
 
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    closeAllTab();
+}
