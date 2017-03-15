@@ -390,6 +390,7 @@ void TestWidget::insertImage(){
     filters<<"*.jpg *.png *.bmp";
     fileDialog->setNameFilters(filters);
     fileDialog->setFilter(QDir::Dirs|QDir::Files);
+
     if(fileDialog->exec() == QDialog::Accepted) {
         path = fileDialog->selectedFiles()[0];
     }
@@ -398,7 +399,11 @@ void TestWidget::insertImage(){
     QImage image;
     image.load(path);
     // image=image.scaled(100,100,Qt::IgnoreAspectRatio,Qt::FastTransformation);
-    cursor.insertImage(image,"name");
+//<img src="file:C:/Users/吴越华/Pictures/Screenshots/屏幕截图(1).png">
+//    QRegExp rx("<img src=\"(file:(.*))\"");
+
+
+    cursor.insertImage(image,"file:///"+path);
     ui->textEdit->setTextCursor( cursor );
     ui->textEdit->setFocus();
 
