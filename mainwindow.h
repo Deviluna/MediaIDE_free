@@ -7,6 +7,7 @@
 #include <QFileSystemModel>
 #include <QMenu>
 #include <QWidget>
+#include <QCloseEvent>
 
 
 namespace Ui {
@@ -26,6 +27,7 @@ public:
     void CloseNowTab();
     void renameNowDir(QString newName);
     QWidget* Page();
+    bool renameNowTab(QString newName);
 private slots:
 
     void createProject();
@@ -64,6 +66,10 @@ private slots:
 
 
     void on_pushButton_2_clicked();
+
+    void on_tabWidget_customContextMenuRequested(const QPoint &pos);
+
+    void on_tabWidget_tabBarClicked(int index);
 
 private:
     void setupMenu();
@@ -105,6 +111,8 @@ private:
     QString prootPath;
     QString mstPath;
     QStringList mstList;
+    void closeEvent(QCloseEvent *event);
+
 
 };
 

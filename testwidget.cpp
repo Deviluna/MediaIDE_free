@@ -38,7 +38,8 @@ void TestWidget::on_pushButton_clicked()
 }
 
 void TestWidget::save(){
-    outputFile(nowFile);
+    if(!outputFile(nowFile))
+        return;
 
 }
 
@@ -74,7 +75,7 @@ void TestWidget::findWord(QString word){
 }
 
 
-void TestWidget::outputFile(QString path){
+bool TestWidget::outputFile(QString path){
     //建议都改掉，都传MAP或者stringlist，现在参数太多了。
     //如果用stringlist性能应该会好一点，后面跟着改东西应该也少一点，用stringlist把。
 
@@ -97,7 +98,7 @@ void TestWidget::outputFile(QString path){
     QFileInfo fi=QFileInfo(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QMessageBox::information(NULL, tr("提示信息："), tr("文件打开失败！"));
-        return;
+        return false;
     }
     QTextStream out(&file);
     out.setCodec("UTF-8");
@@ -105,10 +106,12 @@ void TestWidget::outputFile(QString path){
     file.close();
     //目前保存功能移植完毕，但是由于treeview在主界面 所以没有刷新。
     if(fi.baseName()!=ui->lineEdit->text()){
-        file.rename(fi.absolutePath()+"\\"+ui->lineEdit->text()+".m");
-        loadFile(fi.absolutePath()+"\\"+ui->lineEdit->text()+".m");
+        if(!file.rename(fi.absolutePath().replace("/","\\")+"\\"+ui->lineEdit->text()+".m")){
+            return false;
+        }
+        loadFile(fi.absolutePath().replace("/","\\")+"\\"+ui->lineEdit->text()+".m");
     }
-
+    return true;
 }
 
 void TestWidget::getNowtext(){
@@ -124,6 +127,7 @@ QString TestWidget::getPath(){
 //此处打算大改，修改成对json形式的存储。
 //行有余力，就对数据格式加密
 void TestWidget::loadFile(QString path){
+
     QFileInfo fi=QFileInfo(path);
     nowFile=path;
     ui->lineEdit->setText(fi.baseName());
@@ -154,7 +158,7 @@ void TestWidget::loadFile(QString path){
 
     ui->lineEdit_3->setText(mList[1]);
 
-     ui->textEdit->setText(mList[2]);
+    ui->textEdit->setText(mList[2]);
 
     change=false;
 }
@@ -394,13 +398,15 @@ void TestWidget::insertImage(){
     if(fileDialog->exec() == QDialog::Accepted) {
         path = fileDialog->selectedFiles()[0];
     }
+
+
     QTextCursor cursor = ui->textEdit->textCursor();
     ui->textEdit->setTextCursor( cursor );  // added
     QImage image;
     image.load(path);
     // image=image.scaled(100,100,Qt::IgnoreAspectRatio,Qt::FastTransformation);
-//<img src="file:C:/Users/吴越华/Pictures/Screenshots/屏幕截图(1).png">
-//    QRegExp rx("<img src=\"(file:(.*))\"");
+    //<img src="file:C:/Users/吴越华/Pictures/Screenshots/屏幕截图(1).png">
+    //    QRegExp rx("<img src=\"(file:(.*))\"");
 
 
     cursor.insertImage(image,"file:///"+path);

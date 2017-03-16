@@ -10,6 +10,7 @@
 #include <QCoreApplication>
 #include <QDebug>
 #include <QDir>
+#include <QFileDialog>
 
 
 ArgAll::ArgAll()
@@ -24,6 +25,26 @@ QString ArgAll::configPath(){
     return  QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation).replace("/","\\")+"\\MediaIDEFile";
 
 }
+
+
+QString ArgAll::insertImage(QWidget *parent){
+    QString path;
+    QFileDialog* fileDialog = new QFileDialog(parent);
+    fileDialog->setWindowTitle("插入图片");
+    fileDialog->setFileMode(QFileDialog::ExistingFile);
+
+    QStringList filters;
+    filters<<"*.jpg *.png *.bmp";
+    fileDialog->setNameFilters(filters);
+    fileDialog->setFilter(QDir::Dirs|QDir::Files);
+
+    if(fileDialog->exec() == QDialog::Accepted) {
+        path = fileDialog->selectedFiles()[0];
+    }
+
+    return path;
+}
+
 QString  ArgAll::readFile(QString path){
 
     QFile file(path);

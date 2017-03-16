@@ -29,7 +29,7 @@
 #include <argall.h>
 #include <qstringlist.h>
 #include <renamedialog.h>
-
+#include <QCloseEvent>
 
 
 MainWindow::
@@ -97,7 +97,12 @@ void MainWindow::initTabWidget(){
     closeAllTab();
 }
 
+bool MainWindow::renameNowTab(QString newName){
 
+
+    int nowIndex=ui->tabWidget->currentIndex();
+    ui->tabWidget->setTabText(nowIndex,newName);
+}
 
 void MainWindow::closeTab(int a){
     TestWidget *nowWidget=(TestWidget*)ui->tabWidget->widget(a);
@@ -111,7 +116,6 @@ void MainWindow::closeTab(int a){
     else
     {
         ui->tabWidget->removeTab(a);
-        ArgAll::removeMSTTab(mstPath,a);
     }
 }
 
@@ -133,6 +137,26 @@ void MainWindow::openProject(){
     }
 
 }
+
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+
+    QString lastTabs="";
+
+
+    for(int i=0;i<ui->tabWidget->count();i++){
+        TestWidget *tw=(TestWidget*)ui->tabWidget->widget(i);
+        if(i!=0)lastTabs+=",";
+        lastTabs+=tw->getPath();
+    }
+
+    ArgAll::modifyJson(mstPath,"openedTab",lastTabs);
+
+
+}
+
+
 
 void MainWindow::OpenProject(){
     QFileDialog* fileDialog = new QFileDialog(this);
@@ -198,6 +222,8 @@ void MainWindow::loadProject(QString path){
     mstList=ArgAll::parseMSTJson(mstPath);
     ui->label_2->setText(mstList[0]);
     //加一段，写入path到json中。
+
+
     ArgAll::modifyPSTJson("lastProject",path);
     QStringList openedTabs=ArgAll::parseMSTJson(mstPath)[1].split(",");
 
@@ -276,7 +302,6 @@ void MainWindow::loadFile(QString path){
     ui->tabWidget->insertTab(ui->tabWidget->count()+1,page,fi.baseName());
     ui->tabWidget->setCurrentIndex(ui->tabWidget->count()-1);
 
-    ArgAll::addMSTTab(mstPath,path);
 }
 
 
@@ -343,7 +368,6 @@ void MainWindow::renameNowDir(QString newName){
         QFileInfo lsqfi(tw->getPath());
         if(lsqfi.canonicalPath()==qfi.filePath()){
             ui->tabWidget->removeTab(i);
-            ArgAll::removeMSTTab(mstPath,i);
 
         }
     }
@@ -424,7 +448,6 @@ void MainWindow::deleteFile(){
         TestWidget *tw=(TestWidget*)ui->tabWidget->widget(i);
         if(tw->getPath().compare(path)==0){
             ui->tabWidget->removeTab(i);
-            ArgAll::removeMSTTab(mstPath,i);
         }
 
 
@@ -468,8 +491,3 @@ void MainWindow::on_pushButton_8_clicked()
     }
 }
 
-
-void MainWindow::on_pushButton_2_clicked()
-{
-    closeAllTab();
-}

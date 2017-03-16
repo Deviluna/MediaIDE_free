@@ -2,6 +2,8 @@
 #define ARGALL_H
 
 #include <QString>
+#include <QWidget>
+
 
 class ArgAll
 {
@@ -27,6 +29,7 @@ public:
     static QString replacelistString(QString temp,QStringList strList);
     static QString getReplacedIndex(QStringList strList,QStringList dirList);
     static QString webURL();
+    static QString insertImage(QWidget *parent);
 };
 
 #endif // ARGALL_H

@@ -40,7 +40,7 @@ public:
     void addFile(QString fileName);
     void previewHtml(QString path);
     //void loadFile(QString path);
-    void outputFile(QString path);
+    bool outputFile(QString path);
     void setTreeview();
     void setColor(const QColor &c);
     void setFont(const QFont &font);
