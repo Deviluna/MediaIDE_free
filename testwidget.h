@@ -111,6 +111,12 @@ private slots:
 
     void on_pushButton_6_clicked();
 
+    void on_toolButton_15_clicked();
+
+    void on_toolButton_16_clicked();
+
+    void on_toolButton_21_clicked();
+
 private:
     Ui::TestWidget *ui;
 

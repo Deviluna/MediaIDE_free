@@ -410,7 +410,7 @@ void TestWidget::insertImage(){
 
 
     cursor.insertImage(image,"file:///"+path);
-   // cursor.insertHtml("http://deviluna.com");
+    // cursor.insertHtml("http://deviluna.com");
     ui->textEdit->setTextCursor( cursor );
     ui->textEdit->setFocus();
 
@@ -478,6 +478,10 @@ void TestWidget::setURL(QString URL){
 
 
 }
+
+
+
+
 void TestWidget::on_pushButton_6_clicked()
 {
     SetURLDialog *sud=new SetURLDialog(this);
@@ -486,4 +490,37 @@ void TestWidget::on_pushButton_6_clicked()
     QTextCharFormat newFormat=ui->textEdit->currentCharFormat();
     sud->loadUrl(newFormat.anchorHref());
     sud->exec();
+}
+
+void TestWidget::on_toolButton_15_clicked()
+{
+    ui->textEdit->undo();
+
+
+}
+
+void TestWidget::on_toolButton_16_clicked()
+{
+    ui->textEdit->redo();
+}
+
+void TestWidget::on_toolButton_21_clicked()
+{
+    QTextCursor cursor = ui->textEdit->textCursor();
+    ui->textEdit->setTextCursor( cursor );  // added
+    QTextCharFormat newFormat=ui->textEdit->currentCharFormat();
+
+    if(newFormat.fontItalic())
+        newFormat.setFontItalic(false);
+    else
+        newFormat.setFontItalic(true);
+
+
+    //  newFormat.AlignMiddle=true;
+    ui->textEdit->setCurrentCharFormat(newFormat);
+    ui->textEdit->setText(ui->textEdit->toHtml());
+    // cursor.movePosition( QTextCursor::PreviousCharacter );//加上这句是为了去除光标selected
+    ui->textEdit->setTextCursor( cursor ); // added
+    //    ui->view1->setCurrentCharFormat( defcharfmt );
+    ui->textEdit->setFocus();
 }
