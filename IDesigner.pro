@@ -37,7 +37,9 @@ SOURCES += main.cpp\
     argall.cpp \
     generatedialog.cpp \
     introdialog.cpp \
-    renamedialog.cpp
+    renamedialog.cpp \
+    dirprodialog.cpp \
+    seturldialog.cpp
 
 HEADERS  += mainwindow.h \
     addfiledialog.h \
@@ -52,7 +54,9 @@ HEADERS  += mainwindow.h \
     argall.h \
     generatedialog.h \
     introdialog.h \
-    renamedialog.h
+    renamedialog.h \
+    dirprodialog.h \
+    seturldialog.h
 
 FORMS    += mainwindow.ui \
     addfiledialog.ui \
@@ -66,7 +70,9 @@ FORMS    += mainwindow.ui \
     testpage.ui \
     generatedialog.ui \
     introdialog.ui \
-    renamedialog.ui
+    renamedialog.ui \
+    dirprodialog.ui \
+    seturldialog.ui
 
 RESOURCES += \
     designer.qrc

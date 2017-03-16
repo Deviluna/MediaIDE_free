@@ -112,7 +112,7 @@ private:
     QString mstPath;
     QStringList mstList;
     void closeEvent(QCloseEvent *event);
-
+    void setDirPro(QString Path);
 
 };
 

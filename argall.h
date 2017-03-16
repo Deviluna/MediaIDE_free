@@ -4,7 +4,6 @@
 #include <QString>
 #include <QWidget>
 
-
 class ArgAll
 {
 public:
@@ -20,6 +19,7 @@ public:
     static QString getSettingPath();
     static bool modifyPSTJson(QString key,QString value);
     static bool modifyJson(QString Path,QString key,QString value);
+    static QString getValueJson(QString path,QString key);
     static bool createFile(QString path);
     static QStringList parseMSTJson(QString mstfilePath);
     static bool addMSTTab(QString MSTPath,QString path);
@@ -30,6 +30,7 @@ public:
     static QString getReplacedIndex(QStringList strList,QStringList dirList);
     static QString webURL();
     static QString insertImage(QWidget *parent);
+    static QString dirProName();
 };
 
 #endif // ARGALL_H

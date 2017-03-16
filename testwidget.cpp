@@ -18,6 +18,7 @@
 #include <QDebug>
 #include <QDateTime>
 #include <introdialog.h>
+#include <seturldialog.h>
 
 
 TestWidget::TestWidget(QWidget *parent) :
@@ -182,7 +183,6 @@ void TestWidget::previewHtml(QString path){
 
     // QFile file(":/new/prefix1/Template/template.html");
     QStringList strList;
-    qDebug()<<list[1];
     strList<<title<<author<<list[1]<<date;
     QString outputString=ArgAll::replaceTemplate(templateStr,strList);
     QString wkpath=ArgAll::configPath();
@@ -410,6 +410,7 @@ void TestWidget::insertImage(){
 
 
     cursor.insertImage(image,"file:///"+path);
+   // cursor.insertHtml("http://deviluna.com");
     ui->textEdit->setTextCursor( cursor );
     ui->textEdit->setFocus();
 
@@ -457,3 +458,25 @@ void TestWidget::on_pushButton_5_clicked()
 }
 
 
+void TestWidget::setURL(QString URL){
+
+    QTextCursor cursor = ui->textEdit->textCursor();
+    ui->textEdit->setTextCursor( cursor );  // added
+    QTextCharFormat newFormat=ui->textEdit->currentCharFormat();
+    newFormat.setAnchorHref(URL);
+    //  newFormat.AlignMiddle=true;
+    ui->textEdit->setCurrentCharFormat(newFormat);
+    // cursor.movePosition( QTextCursor::PreviousCharacter );//加上这句是为了去除光标selected
+    ui->textEdit->setTextCursor( cursor ); // added
+    //    ui->view1->setCurrentCharFormat( defcharfmt );
+    ui->textEdit->setFocus();
+
+
+
+
+}
+void TestWidget::on_pushButton_6_clicked()
+{
+    SetURLDialog *sud=new SetURLDialog(this);
+    sud->exec();
+}

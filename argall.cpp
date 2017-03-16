@@ -63,6 +63,17 @@ QString  ArgAll::readFile(QString path){
     return allStr;
 }
 
+QString ArgAll::dirProName(){
+    return "属性";
+}
+QString ArgAll::getValueJson(QString path, QString key){
+
+    QString allStr=ArgAll::readFile(path);
+    QJsonObject json=QJsonDocument::fromJson(allStr.toUtf8()).object();
+    return json.value(key).toString();
+
+}
+
 bool ArgAll::outputFile(QString path, QString content){
 
     QFileInfo fi=QFileInfo(path);
@@ -147,6 +158,7 @@ bool ArgAll::modifyJson(QString path,QString key, QString value){
     json.insert(key,value);
     QString output=QString(QJsonDocument(json).toJson());
     ArgAll::outputFile(path,output);
+    return true;
 }
 
 
@@ -154,6 +166,7 @@ bool ArgAll::modifyJson(QString path,QString key, QString value){
 
 bool ArgAll::modifyPSTJson(QString key, QString value){
     ArgAll::modifyJson(ArgAll::getSettingPath(),key,value);
+    return true;
 }
 
 
@@ -196,8 +209,6 @@ bool ArgAll::removeMSTTab(QString MSTPath, int x){
     QStringList openedTabs=mstList[1].split(",");
     QString newTabs="";
 
-    QList<QString>::Iterator it = openedTabs.begin(),itend = openedTabs.end();
-    int i=0;
     int first=0;
     for (int i=0;i<openedTabs.length(); i++){
         if(i==x)
@@ -209,6 +220,7 @@ bool ArgAll::removeMSTTab(QString MSTPath, int x){
         newTabs+=openedTabs[i];
     }
     ArgAll::modifyJson(MSTPath,"openedTab",newTabs);
+    return true;
 }
 
 QString ArgAll::settingName(){

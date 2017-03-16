@@ -45,10 +45,23 @@ void GenerateDialog::on_pushButton_2_clicked()
     close();
 }
 
+
+
+
+
+
+
 void GenerateDialog::on_pushButton_clicked()
 {
     //生成时间到
+
+
+    //目前的修改来看，dir不需要递归调用了，先把当前dir遍历，每个的sort digit读一遍，根据顺序来决定先做谁。
+    //所以要先遍历project path下的文件夹，得到其json，再用结构体排序。
+
     genDir(projectPath,"");
+
+
 
 
     genIndex();
@@ -230,9 +243,20 @@ void GenerateDialog::genHtml(QString path,QString prefix,int index,QString dirPa
 
 }
 
+
+
 void GenerateDialog::genDir(QString path,QString dirPath){
 
+
+
+
+
+
+
     QDir dir(path);
+
+
+
     int index=0;
     int dirIndex=0;
     //dir.setFilter(QDir::NoDotAndDotDot);

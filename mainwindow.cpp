@@ -30,6 +30,7 @@
 #include <qstringlist.h>
 #include <renamedialog.h>
 #include <QCloseEvent>
+#include <dirprodialog.h>
 
 
 MainWindow::
@@ -51,7 +52,7 @@ MainWindow::~MainWindow()
 void MainWindow::setupMenu(){
     connect(ui->actionS,SIGNAL(triggered()),this,SLOT(close()));
     connect(ui->actionAbout,SIGNAL(triggered()),this,SLOT(about()));
-    connect(ui->actionCreate,SIGNAL(triggered()),this,SLOT(createProject()));
+    connect(ui->actionCreate,SIGNAL(triggered()),this,SLOT(ject()));
     connect(ui->actionOpen,SIGNAL(triggered()),this,SLOT(openProject()));
     connect(ui->actionX,SIGNAL(triggered()),this,SLOT(generate()));
 }
@@ -123,6 +124,18 @@ QWidget* MainWindow::Page(){
     return ui->tabWidget->currentWidget();
 }
 
+
+void MainWindow::setDirPro(QString path){
+
+
+           DirProDialog *dpd=new DirProDialog(this);
+           dpd->setPath(path);
+           dpd->exec();
+
+
+
+
+}
 
 void MainWindow::openProject(){
     QFileDialog* fileDialog = new QFileDialog(this);
@@ -292,8 +305,14 @@ void MainWindow::loadFile(QString path){
     }
     QFileInfo fi=QFileInfo(path);
 
-    if(fi.fileName()==ArgAll::settingName())
-        //这里应该进入修改project setting的设置
+    if(fi.fileName()==ArgAll::dirProName()){
+        setDirPro(path);
+    }
+
+
+
+
+    if(fi.suffix()!="m")
         return ;
 
     TestWidget *page=new TestWidget;
@@ -341,7 +360,6 @@ void MainWindow::setMenuAction(){
 
 
 void MainWindow::openInExplorer(){
-    qDebug()<<model->filePath(nowIndex);
     QProcess::startDetached("explorer "+model->filePath(nowIndex).replace("/","\\"));
 
 }
@@ -408,13 +426,22 @@ void MainWindow::on_treeView_customContextMenuRequested(const QPoint &pos)
     }
     else if(model->filePath(index).length()>0){
 
+
         QFileInfo qfi(model->filePath(index));
-        if(qfi.suffix()=="mst")
+
+
+
+        if(qfi.suffix()!="m")
             return ;
         m_fileMenu=new QMenu(this);
         //这里虽然实现，但是有问题，讲道理应该用槽来传递变量，但是直接用全局变量。
         //不合规范
         //m_fileMenu->addAction("在本地打开",this,SLOT(openInExplorer()));
+
+
+        //重命名，load当前，之后focus移动到名字属性那里。
+
+
         m_fileMenu->addAction("删除",this,SLOT(deleteFile()));
         m_fileMenu->exec(QCursor::pos());
     }
@@ -469,25 +496,56 @@ void MainWindow::addDir(){
 
 void MainWindow::on_pushButton_8_clicked()
 {
+
+
+    //首先要判断分类是否达到最大,如果超过规定，就不可创建了。
+
+
+
+
     //讲道理类名都该大写的
     addDirDialog *addDialog=new addDirDialog(this);
     if(addDialog->exec()){
         QString dirName=addDialog->getinput();
         QDir *project=new QDir;
-        bool exist = project->exists(rootPath+"\\"+dirName);
+
+        QString dirPath=rootPath+"\\"+dirName;
+        bool exist = project->exists(dirPath);
         if(exist)
             QMessageBox::warning(this,tr("添加分类"),tr("分类已经存在！"));
         else
         {
-            bool ok = project->mkdir(rootPath+"\\"+dirName);
+            bool ok = project->mkdir(dirPath);
             if( ok ){
+                //ok以后要在当前分类下创建分类属性的文件
+                QString dirProPath=dirPath+"\\"+ArgAll::dirProName();
+                ArgAll::createFile(dirProPath);
+
+                ArgAll::modifyJson(dirProPath,"order","10");
+
+
+
             }
             else{
                 QMessageBox::warning(this,tr("创建分类"),tr("失败！"));
             }
         }
-        refreshTree();
 
     }
 }
 
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    closeAllTab();
+}
+
+void MainWindow::on_tabWidget_customContextMenuRequested(const QPoint &pos)
+{
+
+}
+
+void MainWindow::on_tabWidget_tabBarClicked(int index)
+{
+
+}

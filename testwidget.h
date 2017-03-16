@@ -30,6 +30,8 @@ public:
 
     void findWord(QString word);
 
+    void setURL(QString URL);
+
     ~TestWidget();
     void outputFile();
     void setBold();
@@ -106,6 +108,8 @@ private slots:
     void on_lineEdit_2_textChanged(const QString &arg1);
 
     void on_pushButton_5_clicked();
+
+    void on_pushButton_6_clicked();
 
 private:
     Ui::TestWidget *ui;
