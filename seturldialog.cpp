@@ -27,3 +27,8 @@ void SetURLDialog::on_pushButton_2_clicked()
 {
     close();
 }
+
+void SetURLDialog::loadUrl(QString url){
+    ui->lineEdit->setText(url);
+
+}

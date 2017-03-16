@@ -463,9 +463,12 @@ void TestWidget::setURL(QString URL){
     QTextCursor cursor = ui->textEdit->textCursor();
     ui->textEdit->setTextCursor( cursor );  // added
     QTextCharFormat newFormat=ui->textEdit->currentCharFormat();
+    newFormat.setAnchor(true);
     newFormat.setAnchorHref(URL);
+
     //  newFormat.AlignMiddle=true;
     ui->textEdit->setCurrentCharFormat(newFormat);
+    ui->textEdit->setText(ui->textEdit->toHtml());
     // cursor.movePosition( QTextCursor::PreviousCharacter );//加上这句是为了去除光标selected
     ui->textEdit->setTextCursor( cursor ); // added
     //    ui->view1->setCurrentCharFormat( defcharfmt );
@@ -478,5 +481,9 @@ void TestWidget::setURL(QString URL){
 void TestWidget::on_pushButton_6_clicked()
 {
     SetURLDialog *sud=new SetURLDialog(this);
+    QTextCursor cursor = ui->textEdit->textCursor();
+    ui->textEdit->setTextCursor( cursor );  // added
+    QTextCharFormat newFormat=ui->textEdit->currentCharFormat();
+    sud->loadUrl(newFormat.anchorHref());
     sud->exec();
 }

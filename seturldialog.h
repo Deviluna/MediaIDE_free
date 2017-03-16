@@ -14,6 +14,7 @@ class SetURLDialog : public QDialog
 public:
     explicit SetURLDialog(QWidget *parent = 0);
     ~SetURLDialog();
+    void loadUrl(QString url);
 
 private slots:
     void on_pushButton_clicked();
