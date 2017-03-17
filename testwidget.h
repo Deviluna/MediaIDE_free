@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QString>
-
+#include <QTextCharFormat>
 
 namespace Ui {
 class TestWidget;
@@ -65,6 +65,9 @@ public:
     bool change;
     QString preText;
     QStringList mList;
+    QTextCharFormat clearFormat;
+    QTextCharFormat selectedFormat;
+
 private slots:
     void on_pushButton_clicked();
 
@@ -116,6 +119,12 @@ private slots:
     void on_toolButton_16_clicked();
 
     void on_toolButton_21_clicked();
+
+    void on_toolButton_19_clicked();
+
+    void on_toolButton_20_clicked();
+
+    void on_toolButton_20_toggled(bool checked);
 
 private:
     Ui::TestWidget *ui;

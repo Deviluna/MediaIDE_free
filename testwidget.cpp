@@ -20,12 +20,15 @@
 #include <introdialog.h>
 #include <seturldialog.h>
 
-
 TestWidget::TestWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::TestWidget)
 {
     ui->setupUi(this);
+
+
+    clearFormat=ui->textEdit->currentCharFormat();
+
 }
 
 TestWidget::~TestWidget()
@@ -523,4 +526,49 @@ void TestWidget::on_toolButton_21_clicked()
     ui->textEdit->setTextCursor( cursor ); // added
     //    ui->view1->setCurrentCharFormat( defcharfmt );
     ui->textEdit->setFocus();
+}
+
+void TestWidget::on_toolButton_19_clicked()
+{
+    QTextCursor cursor = ui->textEdit->textCursor();
+    ui->textEdit->setTextCursor( cursor );  // added
+    QTextCharFormat newFormat=ui->textEdit->currentCharFormat();
+    ui->textEdit->setCurrentCharFormat(clearFormat);
+    // cursor.movePosition( QTextCursor::PreviousCharacter );//加上这句是为了去除光标selected
+    ui->textEdit->setTextCursor( cursor ); // added
+    //    ui->view1->setCurrentCharFormat( defcharfmt );
+    ui->textEdit->setFocus();
+
+}
+
+void TestWidget::on_toolButton_20_clicked()
+{
+
+
+
+
+
+}
+
+void TestWidget::on_toolButton_20_toggled(bool checked)
+{
+    if(checked){
+
+        QTextCursor cursor = ui->textEdit->textCursor();
+        ui->textEdit->setTextCursor( cursor );  // added
+        selectedFormat=ui->textEdit->currentCharFormat();
+
+
+    }
+
+    else
+    {
+        QTextCursor cursor = ui->textEdit->textCursor();
+        ui->textEdit->setTextCursor( cursor );  // added
+        ui->textEdit->setCurrentCharFormat(selectedFormat);
+        // cursor.movePosition( QTextCursor::PreviousCharacter );//加上这句是为了去除光标selected
+        ui->textEdit->setTextCursor( cursor ); // added
+        //    ui->view1->setCurrentCharFormat( defcharfmt );
+        ui->textEdit->setFocus();    }
+
 }
