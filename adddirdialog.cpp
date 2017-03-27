@@ -18,7 +18,6 @@ addDirDialog::~addDirDialog()
 
 void addDirDialog::on_buttonBox_accepted()
 {
-
 }
 
 void addDirDialog::on_lineEdit_textChanged(const QString &arg1)

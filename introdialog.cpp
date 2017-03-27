@@ -24,7 +24,6 @@ void IntroDialog::setIntroText(QString intro){
 
 void IntroDialog::on_pushButton_2_clicked()
 {
-    //submit
     TestWidget *tw=(TestWidget*)parentWidget();
     tw->mList[4]=ui->lineEdit->text();
     tw->mList[5]=ui->textEdit->toPlainText();

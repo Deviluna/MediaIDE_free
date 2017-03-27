@@ -18,11 +18,11 @@ ArgAll::ArgAll()
 }
 QString ArgAll::documentPath(){
 
-    return QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation).replace("/","\\");
+    return QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
 }
 QString ArgAll::configPath(){
 
-    return  QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation).replace("/","\\")+"\\MediaIDEFile";
+    return  QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)+"/MediaIDEFile";
 
 }
 
@@ -173,7 +173,7 @@ bool ArgAll::modifyPSTJson(QString key, QString value){
 
 QString ArgAll::getSettingPath(){
 
-    return QCoreApplication::applicationDirPath()+"\\userinfo.pst";
+    return QCoreApplication::applicationDirPath()+"/userinfo.pst";
 
 }
 

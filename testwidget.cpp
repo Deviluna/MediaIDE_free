@@ -19,6 +19,8 @@
 #include <QDateTime>
 #include <introdialog.h>
 #include <seturldialog.h>
+#include <qdesktopservices.h>
+#include <QUrl>
 
 TestWidget::TestWidget(QWidget *parent) :
     QWidget(parent),
@@ -110,10 +112,10 @@ bool TestWidget::outputFile(QString path){
     file.close();
     //目前保存功能移植完毕，但是由于treeview在主界面 所以没有刷新。
     if(fi.baseName()!=ui->lineEdit->text()){
-        if(!file.rename(fi.absolutePath().replace("/","\\")+"\\"+ui->lineEdit->text()+".m")){
+        if(!file.rename(fi.absolutePath()+"/"+ui->lineEdit->text()+".m")){
             return false;
         }
-        loadFile(fi.absolutePath().replace("/","\\")+"\\"+ui->lineEdit->text()+".m");
+        loadFile(fi.absolutePath()+"/"+ui->lineEdit->text()+".m");
     }
     return true;
 }
@@ -170,8 +172,6 @@ void TestWidget::previewHtml(QString path){
 
 
     //这里可以重构，复用代码
-
-
     QString templateStr=ArgAll::readFile(":/new/prefix1/Template/template.html");
 
     QString title=ui->lineEdit->text();
@@ -194,17 +194,16 @@ void TestWidget::previewHtml(QString path){
         wkdir.mkdir(wkpath);
     }
 
-    ArgAll::outputFile(wkpath+"\\temp.html",outputString);
-    //output(wkpath+"\\temp.html",outputString);
+    ArgAll::outputFile(wkpath+"/temp.html",outputString);
+    //output(wkpath+"/temp.html",outputString);
     QDir targetDir(wkpath);
     targetDir.mkdir("stylesheets");
 
     QFile file(":/new/prefix1/Template/stylesheets/stylesheet.css");
-    file.copy(wkpath+"\\stylesheets\\stylesheet.css");
+    file.copy(wkpath+"/stylesheets/stylesheet.css");
 
-    QProcess* process = new QProcess();
-    QString notepadPath = "explorer  "+wkpath+"\\temp.html";
-    process->start(notepadPath);
+    QString notepadPath =wkpath+"/temp.html";
+    QDesktopServices::openUrl(QUrl::fromLocalFile(notepadPath));
 
 }
 

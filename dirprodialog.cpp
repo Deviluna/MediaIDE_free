@@ -9,7 +9,6 @@ DirProDialog::DirProDialog(QWidget *parent) :
     ui(new Ui::DirProDialog)
 {
     ui->setupUi(this);
-//应该要对编号是否是数字进行判断
 
 }
 

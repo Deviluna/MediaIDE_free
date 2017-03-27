@@ -32,7 +32,7 @@ void WelcomeDialog::on_commandLinkButton_2_clicked()
 
 void WelcomeDialog::on_commandLinkButton_3_clicked()
 {
-     QUrl url("http://deviluna.com");
+    QUrl url("http://deviluna.com");
     QDesktopServices::openUrl(url);
 
 }

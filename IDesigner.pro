@@ -31,9 +31,7 @@ SOURCES += main.cpp\
     testwidget.cpp \
     closedialog.cpp \
     welcomedialog.cpp \
-    wizard.cpp \
     rmdirdialog.cpp \
-    testpage.cpp \
     argall.cpp \
     generatedialog.cpp \
     introdialog.cpp \
@@ -48,9 +46,7 @@ HEADERS  += mainwindow.h \
     testwidget.h \
     closedialog.h \
     welcomedialog.h \
-    wizard.h \
     rmdirdialog.h \
-    testpage.h \
     argall.h \
     generatedialog.h \
     introdialog.h \
@@ -65,9 +61,7 @@ FORMS    += mainwindow.ui \
     testwidget.ui \
     closedialog.ui \
     welcomedialog.ui \
-    wizard.ui \
     rmdirdialog.ui \
-    testpage.ui \
     generatedialog.ui \
     introdialog.ui \
     renamedialog.ui \

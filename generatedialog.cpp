@@ -8,12 +8,13 @@
 #include <QString>
 #include <QDir>
 #include <QFile>
-#include <QProcess>
 #include <QFileInfo>
 #include <QDebug>
 #include <QFileDialog>
 #include <argall.h>
 #include <QRegExp>
+#include <qdesktopservices.h>
+#include <qurl.h>
 
 
 
@@ -69,7 +70,7 @@ void GenerateDialog::on_pushButton_clicked()
     outputJson();
 
     ui->label->setText("done");
-    QProcess::startDetached("explorer "+ArgAll::configPath());
+    QDesktopServices::openUrl(QUrl::fromLocalFile(ArgAll::configPath()));
 
     //close();
 }
@@ -81,7 +82,7 @@ void GenerateDialog::genIndex(){
 
     QString outputString=ArgAll::getReplacedIndex(toReplaceIndex,dirList);
 
-    ArgAll::outputFile(ArgAll::configPath()+"\\index.html",outputString);
+    ArgAll::outputFile(ArgAll::configPath()+"/index.html",outputString);
 
 
 
@@ -106,11 +107,11 @@ void GenerateDialog::genIndex(){
         QStringList toReplaceClassify;
         toReplaceClassify<<*nowIndexList;
         outputString=ArgAll::getReplacedIndex(toReplaceClassify,dirList);
-        ArgAll::outputFile(ArgAll::configPath()+"\\"+"classify"+QString::number(i)+".html",outputString);
+        ArgAll::outputFile(ArgAll::configPath()+"/"+"classify"+QString::number(i)+".html",outputString);
 
         //暂时先把主页屏蔽了
         if(i==0)
-            ArgAll::outputFile(ArgAll::configPath()+"\\index.html",outputString);
+            ArgAll::outputFile(ArgAll::configPath()+"/index.html",outputString);
 
 
     }
@@ -120,7 +121,7 @@ void GenerateDialog::genIndex(){
     QDir targetDir(ArgAll::configPath());
     targetDir.mkdir("stylesheets");
     QFile file2(":/new/prefix1/Template/stylesheets/stylesheet.css");
-    file2.copy(ArgAll::configPath()+"\\stylesheets\\stylesheet.css");
+    file2.copy(ArgAll::configPath()+"/stylesheets/stylesheet.css");
 
 }
 
@@ -131,7 +132,7 @@ bool GenerateDialog::outputJson(){
 
     QByteArray byte_array = QJsonDocument(json_array).toJson();
 
-    QString jsonP=ArgAll::configPath()+"\\json\\";
+    QString jsonP=ArgAll::configPath()+"/json/";
 
     QDir wkdir(jsonP);
     if(!wkdir.exists()){
@@ -139,7 +140,7 @@ bool GenerateDialog::outputJson(){
     }
 
 
-    ArgAll::outputFile(ArgAll::configPath()+"\\json\\article.json",QString(byte_array));
+    ArgAll::outputFile(ArgAll::configPath()+"/json/article.json",QString(byte_array));
 
     return true;
 }
@@ -176,7 +177,7 @@ void GenerateDialog::genHtml(QString path,QString prefix,int index,QString dirPa
         QFile lspic(list[2]);
         QFileInfo lspicInfo(list[2]);
         QString lspicName=prefix+QString::number(index)+"_"+QString::number(picindex++)+"."+lspicInfo.suffix();
-        QString lspicPath=ArgAll::configPath()+"\\"+dirPath+"\\"+lspicName;
+        QString lspicPath=ArgAll::configPath()+"/"+dirPath+"/"+lspicName;
         lspic.copy(lspicPath);
         htmlContent.replace(list[1],lspicName);
         bh++;
@@ -213,11 +214,11 @@ void GenerateDialog::genHtml(QString path,QString prefix,int index,QString dirPa
     }
 
 
-    if(ArgAll::outputFile(wkpath+dirPath+"\\"+prefix+QString::number(index)+".html",outputString)){
+    if(ArgAll::outputFile(wkpath+dirPath+"/"+prefix+QString::number(index)+".html",outputString)){
         //如果生成成功，在主页添加文章列表和链接。
         QString fName=prefix+QString::number(index)+".html";
         QStringList newList;
-        QString address=dirPath+"\\"+fName;
+        QString address=dirPath+"/"+fName;
         newList<<address<<strList[0]<<strList[5]<<strList[3];
         indexlist+=ArgAll::replacelistString(ArgAll::listString(),newList);
         *nowIndexList+=ArgAll::replacelistString(ArgAll::listString(),newList);
@@ -226,7 +227,7 @@ void GenerateDialog::genHtml(QString path,QString prefix,int index,QString dirPa
         json.insert("title", strList[0]);
         QString dirPath2=dirPath;
 
-        json.insert("url", ArgAll::webURL()+"/"+dirPath2.replace("\\","")+"/"+fName);
+        json.insert("url", ArgAll::webURL()+"/"+dirPath2.replace("/","")+"/"+fName);
         json.insert("date", strList[3]);
         json.insert("author",strList[1]);
 
@@ -239,7 +240,7 @@ void GenerateDialog::genHtml(QString path,QString prefix,int index,QString dirPa
 
 
     QFile file2(":/new/prefix1/Template/stylesheets/stylesheet.css");
-    file2.copy(wkpath+dirPath+"\\stylesheets\\stylesheet.css");
+    file2.copy(wkpath+dirPath+"/stylesheets/stylesheet.css");
 
 }
 
@@ -296,7 +297,7 @@ void GenerateDialog::genDir(QString path,QString dirPath){
                     nowIndexList=&classifylist4;
                     break;
 }
-                genDir(mfi.filePath(),dirPath+"\\folder"+QString::number(dirIndex++));
+                genDir(mfi.filePath(),dirPath+"/folder"+QString::number(dirIndex++));
 
             }
         }

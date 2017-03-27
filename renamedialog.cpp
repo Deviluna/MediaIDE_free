@@ -25,11 +25,7 @@ void RenameDialog::on_pushButton_2_clicked()
 
 void RenameDialog::on_pushButton_clicked()
 {
-    //确定键
-    //把lineedit内容传给父窗口并调用重命名。
     MainWindow *mw=(MainWindow*)parentWidget();
     mw->renameNowDir(ui->lineEdit->text());
     close();
-   // mw->
-
 }
