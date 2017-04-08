@@ -8,6 +8,8 @@
 #include <QMenu>
 #include <QWidget>
 #include <QCloseEvent>
+#include <QJsonArray>
+#include <QJsonObject>
 
 
 namespace Ui {
@@ -96,6 +98,7 @@ private:
     void setAlign(Qt::Alignment align);
     void setMenuAction();
     void insertImage();
+    void loadJson();
     Ui::MainWindow *ui;
     QFileSystemModel *model;
     QString nowText;
@@ -111,6 +114,7 @@ private:
     QString prootPath;
     QString mstPath;
     QStringList mstList;
+    QJsonObject mstJsonObject;
     void closeEvent(QCloseEvent *event);
     void setDirPro(QString Path);
 

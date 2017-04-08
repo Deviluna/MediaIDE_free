@@ -32,6 +32,9 @@
 #include <dirprodialog.h>
 #include <qdesktopservices.h>
 #include <QUrl>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonDocument>
 
 
 MainWindow::
@@ -44,10 +47,16 @@ MainWindow(QWidget *parent) :
     setupMenu();
     setTreeview();
     initTabWidget();
+
 }
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::loadJson(){
+    mstJsonObject=ArgAll::getJsonObject(mstPath);
+
 }
 
 void MainWindow::setupMenu(){
@@ -64,6 +73,7 @@ void MainWindow::generate(){
     //打开构建界面
     GenerateDialog *gDialog=new GenerateDialog(this);
     gDialog->setProjectPath(rootPath);
+    gDialog->setDirList();
     gDialog->exec();
 }
 
@@ -122,9 +132,10 @@ QWidget* MainWindow::Page(){
 
 
 void MainWindow::setDirPro(QString path){
-           DirProDialog *dpd=new DirProDialog(this);
-           dpd->setPath(path);
-           dpd->exec();
+    //目前废弃
+    DirProDialog *dpd=new DirProDialog(this);
+    dpd->setPath(path);
+    dpd->exec();
 }
 
 void MainWindow::openProject(){
@@ -143,14 +154,36 @@ void MainWindow::openProject(){
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-//关闭时候，存储已经打开的标签页。下次打开软件时候，这些标签页会自动打开
-    QString lastTabs="";
+    //关闭时候，存储已经打开的标签页。下次打开软件时候，这些标签页会自动打开
+    QJsonArray openedTabs;
     for(int i=0;i<ui->tabWidget->count();i++){
         TestWidget *tw=(TestWidget*)ui->tabWidget->widget(i);
-        if(i!=0)lastTabs+=",";
-        lastTabs+=tw->getPath();
+        openedTabs.push_back(tw->getPath());
     }
-    ArgAll::modifyJson(mstPath,"openedTab",lastTabs);
+
+    //把openedTab改成JsonArray形式
+
+
+
+    mstJsonObject.remove("openedTabs");
+    mstJsonObject.insert("openedTabs",openedTabs);
+
+    mstJsonObject.remove("lastIndex");
+    mstJsonObject.insert("lastIndex",ui->tabWidget->currentIndex());
+
+
+
+    ArgAll::outputJson(mstPath,mstJsonObject);
+
+   // ArgAll::modifyJson(mstPath,"openedTab",openedTabs);
+
+
+    // 这个时候再存mst啦。
+
+
+
+
+
 }
 
 
@@ -215,12 +248,14 @@ void MainWindow::loadProject(QString path){
     ui->label_2->setText(mstList[0]);
     //加一段，写入path到json中。
     ArgAll::modifyPSTJson("lastProject",path);
-    QStringList openedTabs=ArgAll::parseMSTJson(mstPath)[1].split(",");
-    for (int i=0;i<openedTabs.length(); i++){
-        QString tabPath=openedTabs[i];
+    loadJson();
+    QJsonArray openedTabs=mstJsonObject.value("openedTabs").toArray();
+    for (int i=0;i<openedTabs.size(); i++){
+        QString tabPath=openedTabs.at(i).toString();
         if(tabPath.length()>0)
             loadFile(tabPath);
     }
+    ui->tabWidget->setCurrentIndex(mstJsonObject.value("lastIndex").toInt());
 }
 
 
@@ -276,18 +311,24 @@ void MainWindow::loadFile(QString path){
     }
     QFileInfo fi=QFileInfo(path);
 
-    if(fi.fileName()==ArgAll::dirProName()){
-        setDirPro(path);
-    }
-    //这个m要从一个统一的位置获取
-    if(fi.suffix()!="m")
-        return ;
-    TestWidget *page=new TestWidget;
-    page->loadFile(path);
-    page->setRootpath(rootPath);
-    ui->tabWidget->insertTab(ui->tabWidget->count()+1,page,fi.baseName());
-    ui->tabWidget->setCurrentIndex(ui->tabWidget->count()-1);
 
+    //这个m要从一个统一的位置获取
+    if(fi.suffix()=="m"){
+
+        TestWidget *page=new TestWidget;
+        page->loadFile(path);
+        page->setRootpath(rootPath);
+        ui->tabWidget->insertTab(ui->tabWidget->count()+1,page,fi.baseName());
+        ui->tabWidget->setCurrentIndex(ui->tabWidget->count()-1);
+    }
+
+    if(fi.fileName()==ArgAll::settingName()){
+        //点击打开项目设置窗口
+        //
+        qDebug()<<"点击打开项目设置窗口";
+
+
+    }
 }
 
 void MainWindow::addArticle(){
@@ -407,10 +448,7 @@ void MainWindow::on_pushButton_8_clicked()
         {
             bool ok = project->mkdir(dirPath);
             if( ok ){
-                //ok以后要在当前分类下创建分类属性的文件
-                QString dirProPath=dirPath+"/"+ArgAll::dirProName();
-                ArgAll::createFile(dirProPath);
-                ArgAll::modifyJson(dirProPath,"order","10");
+
             }
             else{
                 QMessageBox::warning(this,tr("创建分类"),tr("失败！"));

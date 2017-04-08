@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QString>
 #include <QTextCharFormat>
+#include <QJsonObject>
+
 
 namespace Ui {
 class TestWidget;
@@ -43,6 +45,7 @@ public:
     void previewHtml(QString path);
     //void loadFile(QString path);
     bool outputFile(QString path);
+    bool newFile(QString path);
     void setTreeview();
     void setColor(const QColor &c);
     void setFont(const QFont &font);
@@ -67,6 +70,7 @@ public:
     QStringList mList;
     QTextCharFormat clearFormat;
     QTextCharFormat selectedFormat;
+    QJsonObject mJsonObject;
 
 private slots:
     void on_pushButton_clicked();

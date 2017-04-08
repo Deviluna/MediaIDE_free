@@ -25,7 +25,9 @@ QString ArgAll::configPath(){
     return  QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)+"/MediaIDEFile";
 
 }
-
+QString ArgAll::testPath(){
+    return "C:/Users/Administrator/unityfly.github.com";
+}
 
 QString ArgAll::insertImage(QWidget *parent){
     QString path;
@@ -66,6 +68,15 @@ QString  ArgAll::readFile(QString path){
 QString ArgAll::dirProName(){
     return "属性";
 }
+
+
+QJsonObject ArgAll::getJsonObject(QString path){
+    QString allStr=ArgAll::readFile(path);
+    QJsonObject json=QJsonDocument::fromJson(allStr.toUtf8()).object();
+    return json;
+}
+
+
 QString ArgAll::getValueJson(QString path, QString key){
 
     QString allStr=ArgAll::readFile(path);
@@ -119,8 +130,6 @@ QStringList ArgAll::parseMJson(QString path){
 
     //QString mdate=json.value("mdate").toString();
 
-
-
     QStringList strList;
     strList<<title<<author<<content<<date<<intropic<<introtext;
     return strList;
@@ -161,7 +170,10 @@ bool ArgAll::modifyJson(QString path,QString key, QString value){
     return true;
 }
 
-
+void ArgAll::outputJson(QString path, QJsonObject json){
+    QString output=QString(QJsonDocument(json).toJson());
+    ArgAll::outputFile(path,output);
+}
 
 
 bool ArgAll::modifyPSTJson(QString key, QString value){

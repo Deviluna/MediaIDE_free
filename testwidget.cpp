@@ -21,14 +21,13 @@
 #include <seturldialog.h>
 #include <qdesktopservices.h>
 #include <QUrl>
+#include <QJsonObject>
 
 TestWidget::TestWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::TestWidget)
 {
     ui->setupUi(this);
-
-
     clearFormat=ui->textEdit->currentCharFormat();
 
 }
@@ -51,8 +50,6 @@ void TestWidget::save(){
 
 void TestWidget::findWord(QString word){
 
-
-
     if(ui->textEdit->find(word,QTextDocument::FindCaseSensitively))
     {
         QPalette palette = ui->textEdit->palette();
@@ -71,12 +68,21 @@ void TestWidget::findWord(QString word){
             QPalette palette = ui->textEdit->palette();
             palette.setColor(QPalette::Highlight,palette.color(QPalette::Active,QPalette::Highlight));
             ui->textEdit->setPalette(palette);
-            //ui->textEdit->setCursor();
         }
-
-
-        else       QMessageBox::information(this,tr("注意"),tr("没有找到内容：")+word,QMessageBox::Ok);
+        else
+            QMessageBox::information(this,tr("注意"),tr("没有找到内容：")+word,QMessageBox::Ok);
     }
+
+}
+
+
+
+bool TestWidget::newFile(QString path){
+    outputFile(path);
+    QJsonObject json= ArgAll::getJsonObject(path);
+    json.insert("createDate",QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
+    qDebug()<<"output path:"<<path;
+    ArgAll::outputJson(path,json);
 
 }
 
@@ -84,7 +90,6 @@ void TestWidget::findWord(QString word){
 bool TestWidget::outputFile(QString path){
     //建议都改掉，都传MAP或者stringlist，现在参数太多了。
     //如果用stringlist性能应该会好一点，后面跟着改东西应该也少一点，用stringlist把。
-
     QString content=ui->textEdit->toHtml();
     QString author=ui->lineEdit_3->text();
     QString title=ui->lineEdit->text();
@@ -138,13 +143,13 @@ void TestWidget::loadFile(QString path){
     nowFile=path;
     ui->lineEdit->setText(fi.baseName());
     ui->textEdit->setText("");
-
     //下面这段函数主要是为了防止stringlist越界
     mList=ArgAll::parseMJson(path);
+    mJsonObject=ArgAll::getJsonObject(path);
 
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
-        outputFile(path);
+        newFile(path);
         return;
     }
     QString allStr="";
@@ -157,15 +162,10 @@ void TestWidget::loadFile(QString path){
         allStr+=line;
     }
     //以上读完了all string
-
     mList=ArgAll::parseMJson(path);
-
     ui->lineEdit->setText(mList[0]);
-
     ui->lineEdit_3->setText(mList[1]);
-
     ui->textEdit->setText(mList[2]);
-
     change=false;
 }
 void TestWidget::previewHtml(QString path){

@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QWidget>
+#include <QJsonObject>
 
 class ArgAll
 {
@@ -31,6 +32,9 @@ public:
     static QString webURL();
     static QString insertImage(QWidget *parent);
     static QString dirProName();
+    static QJsonObject getJsonObject(QString path);
+    static QString testPath();
+    static void outputJson(QString path,QJsonObject json);
 };
 
 #endif // ARGALL_H

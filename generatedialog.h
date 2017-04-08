@@ -17,12 +17,20 @@ public:
     explicit GenerateDialog(QWidget *parent = 0);
     ~GenerateDialog();
     void setProjectPath(QString path);
+    void setDirList();
+
 private slots:
     void on_pushButton_2_clicked();
 
     void on_pushButton_clicked();
 
     void on_pushButton_3_clicked();
+
+    void on_toolButton_clicked();
+
+    void on_toolButton_2_clicked();
+
+    void on_listWidget_doubleClicked(const QModelIndex &index);
 
 private:
     Ui::GenerateDialog *ui;
@@ -36,6 +44,7 @@ private:
     QString *nowIndexList;
     QString classifylist1,classifylist2,classifylist3,classifylist4;
     QJsonArray json_array;
+    void gitUpdate();
     int jsonCount;
     bool outputJson();
 };
